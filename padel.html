@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mobile Padel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0b1220;--fg:#e6eef8;--accent:#5eead4; --win-color: #fadb14; --lose-color: #ff4d4f;}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:var(--fg);display:flex;align-items:center;justify-content:center}
+  #wrap{width:400px;text-align:center; position: relative;} 
+  canvas{background:linear-gradient(180deg,#071021 0%, #0d1626 100%);display:block;margin:10px auto;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.6);touch-action:none}
+  #hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:#bcd;flex-wrap:wrap; padding: 0 10px;}
+  .btn{background:var(--accent);border:none;padding:6px 12px;border-radius:6px;color:#000;font-weight:600;cursor:pointer;margin:4px}
+  
+  /* CSS untuk Semua Overlay (Modal) */
+  .game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(11, 18, 32, 0.98); 
+    z-index: 20; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .overlay-content {
+      padding: 30px 20px;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+      z-index: 21;
+  }
+  .selection-btn {
+      margin: 8px;
+      min-width: 100px;
+  }
+  #rules-overlay { display: none; } 
+
+  /* CSS BARU: Pesan Akhir Game */
+  #endgame-message {
+      display: none; /* Awalnya tersembunyi */
+      position: absolute;
+      top: 15%; /* Penyesuaian agar di tengah vertikal kanvas */
+      width: 100%;
+      z-index: 30;
+      color: white;
+      text-align: center;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+  }
+  #endgame-message h1 {
+      font-family: 'Bebas Neue', sans-serif; /* Menerapkan Font Bebas Neue */
+      font-size: 80px;
+      margin: 0;
+      line-height: 1;
+      text-shadow: 0 5px 10px rgba(0,0,0,0.7);
+  }
+  #endgame-message p {
+      margin-top: 5px;
+      font-size: 20px;
+  }
+  #endgame-message .btn {
+      margin-top: 20px;
+      font-size: 18px;
+  }
+
+  /* Kelas Khusus Warna */
+  .win-text { color: var(--win-color); }
+  .lose-text { color: var(--lose-color); }
+</style>
+</head>
+<body>
+<div id="wrap">
+  
+  <div id="difficulty-overlay" class="game-overlay">
+      <div class="overlay-content">
+          <h3 style="margin-top: 0; color: var(--accent);">Pilih Tingkat Kesulitan:</h3>
+          <button class="btn selection-btn" onclick="setDifficulty('easy')">Easy</button><br>
+          <button class="btn selection-btn" onclick="setDifficulty('medium')">Medium</button><br>
+          <button class="btn selection-btn" onclick="setDifficulty('hard')">Hard</button>
+      </div>
+  </div>
+
+  <div id="rules-overlay" class="game-overlay">
+      <div class="overlay-content">
+          <h3 style="margin-top: 0; color: var(--accent);">Pilih Aturan Kemenangan:</h3>
+          <button class="btn selection-btn" onclick="setRules(7)">First to 7 Win</button><br>
+          <button class="btn selection-btn" onclick="setRules(21)">First to 21 Win</button><br>
+          <button class="btn selection-btn" onclick="setRules(0)">Free Mode (Infinity Score)</button>
+      </div>
+  </div>
+  
+  <div id="endgame-message">
+    <h1 id="endgame-title"></h1>
+    <p id="endgame-subtitle"></p>
+    <button class="btn" onclick="document.getElementById('endgame-message').style.display = 'none'; document.getElementById('difficulty-overlay').style.display = 'flex';">
+      Restart Game
+    </button>
+  </div>
+  
+  <div id="hud">
+    <div>Score — You: <span id="ps">0</span> : CPU: <span id="cs">0</span></div>
+    <div>
+      <button class="btn" id="pauseBtn">Pause</button>
+      <button class="btn" id="restartBtn">Restart</button>
+    </div>
+  </div>
+  <canvas id="c" width="360" height="600"></canvas>
+  <p style="color:#9fb;font-size:14px" id="rules-display">Aturan: First to <strong>21</strong> points wins!</p>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const paddleW = 80, paddleH = 10;
+const player = {x: W/2 - paddleW/2, y: H - 30, w: paddleW, h: paddleH, speed: 0.2, targetX: W/2 - paddleW/2};
+const cpu = {x: W/2 - paddleW/2, y: 20, w: paddleW, h: paddleH, speed: 5};
+const ball = {x: W/2, y: H/2, r: 8, vx: 0, vy: 0}; 
+let playerScore = 0, cpuScore = 0;
+
+// Variabel Kontrol Game
+const difficultySettings = {
+    easy: { factor: 0.03, ballSpeed: 3 },
+    medium: { factor: 0.1, ballSpeed: 7 },
+    hard: { factor: 0.5, ballSpeed: 10 }
+};
+let currentCpuSpeedFactor = 0; 
+let currentBallSpeed = 4;
+let winTo = 21; 
+let paused = true; 
+
+document.getElementById('pauseBtn').onclick = () => {
+    paused = !paused;
+    document.getElementById('pauseBtn').innerText = paused ? 'Resume' : 'Pause';
+};
+
+// Restart button di HUD sekarang hanya menampilkan modal kesulitan
+document.getElementById('restartBtn').onclick = () => {
+    paused = true; 
+    document.getElementById('difficulty-overlay').style.display = 'flex';
+};
+
+function restartGame(){
+  playerScore = 0; cpuScore = 0;
+  document.getElementById('ps').innerText = playerScore;
+  document.getElementById('cs').innerText = cpuScore;
+  resetBall(); 
+  paused = false;
+  document.getElementById('pauseBtn').innerText = 'Pause';
+}
+
+function setRules(scoreLimit) {
+    winTo = scoreLimit;
+    let ruleText = '';
+    
+    if (winTo === 0) {
+        ruleText = 'Rules: <strong>Free Mode</strong> (No Limit)!';
+    } else {
+        ruleText = `Rules: First to <strong>${winTo}</strong> points wins!`;
+    }
+
+    document.getElementById('rules-display').innerHTML = ruleText;
+    document.getElementById('rules-overlay').style.display = 'none'; 
+    restartGame(); 
+}
+
+function setDifficulty(level) {
+    currentCpuSpeedFactor = difficultySettings[level].factor; 
+    currentBallSpeed = difficultySettings[level].ballSpeed;   
+    document.getElementById('difficulty-overlay').style.display = 'none'; 
+    document.getElementById('rules-overlay').style.display = 'flex'; 
+}
+
+function resetBall(){
+  ball.x = W/2; ball.y = H/2;
+  const speed = currentBallSpeed; 
+  ball.vx = speed * (Math.random() > 0.5 ? 1 : -1);
+  ball.vy = speed * (Math.random() > 0.5 ? 1 : -1);
+}
+
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+// touch/mouse input
+function handleMove(x){
+  player.targetX = clamp(x - player.w/2, 0, W - player.w);
+}
+canvas.addEventListener('touchmove', e => { e.preventDefault(); handleMove(e.touches[0].clientX - canvas.getBoundingClientRect().left); });
+canvas.addEventListener('mousedown', e => handleMove(e.clientX - canvas.getBoundingClientRect().left));
+canvas.addEventListener('mousemove', e => { if(e.buttons) handleMove(e.clientX - canvas.getBoundingClientRect().left); });
+
+
+// Fungsi Baru: Menampilkan Pesan Akhir Game
+function displayEndGame(winner) {
+    paused = true;
+    const msgElement = document.getElementById('endgame-message');
+    const titleElement = document.getElementById('endgame-title');
+    const subtitleElement = document.getElementById('endgame-subtitle');
+    
+    if (winner === 'player') {
+        titleElement.innerText = 'KAMU MENANG!';
+        titleElement.className = 'win-text'; // Warna Kuning
+        subtitleElement.innerText = 'Good job!';
+    } else {
+        titleElement.innerText = 'KAMU KALAH';
+        titleElement.className = 'lose-text'; // Warna Merah
+        subtitleElement.innerText = 'Coba lagi';
+    }
+    
+    msgElement.style.display = 'flex'; // Tampilkan pesan
+}
+
+
+function update(){
+  if (paused) return;
+
+  // smooth player movement toward targetX
+  player.x += (player.targetX - player.x) * player.speed;
+
+  // CPU AI
+  cpu.x += (ball.x - (cpu.x + cpu.w/2)) * currentCpuSpeedFactor;
+  cpu.x = clamp(cpu.x, 0, W - cpu.w);
+
+  // ball physics
+  ball.x += ball.vx; ball.y += ball.vy;
+  if (ball.x - ball.r < 0 || ball.x + ball.r > W) ball.vx *= -1;
+
+  // scoring
+  if (ball.y - ball.r < 0){ playerScore++; document.getElementById('ps').innerText = playerScore; resetBall(); }
+  if (ball.y + ball.r > H){ cpuScore++; document.getElementById('cs').innerText = cpuScore; resetBall(); }
+
+  // paddle collisions 
+  if (ball.y + ball.r > player.y && ball.x > player.x && ball.x < player.x + player.w && ball.vy > 0){
+    ball.vy *= -1; 
+    const diff = ball.x - (player.x + player.w/2); 
+    ball.vx = diff * 0.15;
+    ball.vy *= 1.05; 
+  }
+  if (ball.y - ball.r < cpu.y + cpu.h && ball.x > cpu.x && ball.x < cpu.x + cpu.w && ball.vy < 0){
+    ball.vy *= -1; 
+    const diff = ball.x - (cpu.x + cpu.w/2); 
+    ball.vx = diff * 0.15;
+    ball.vy *= 1.05; 
+  }
+
+  // win condition
+  if (winTo > 0 && (playerScore >= winTo || cpuScore >= winTo)){ 
+    const winner = playerScore > cpuScore ? 'player' : 'cpu';
+    displayEndGame(winner); // Panggil fungsi baru untuk menampilkan pesan akhir
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#081121'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#5eead4'; ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#e6eef8';
+  ctx.fillRect(player.x, player.y, player.w, player.h);
+  ctx.fillRect(cpu.x, cpu.y, cpu.w, cpu.h);
+  ctx.font = '20px monospace'; ctx.fillStyle = 'white';
+  ctx.fillText(playerScore, 30, H/2 + 30);
+  ctx.fillText(cpuScore, 30, H/2 - 10);
+}
+
+function loop(){ update(); draw(); requestAnimationFrame(loop); }
+loop();
+</script>
+</body>
+</html>
