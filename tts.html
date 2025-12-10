@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Password Required</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      background: #f0f0f0;
+    }
+    #login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #aaa;
+      text-align: center;
+      width: 350px;
+    }
+    input {
+      padding: 10px;
+      width: 90%;
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px;
+      margin-top: 15px;
+      width: 100%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="login-box">
+  <h3>Masukkan Password</h3>
+  <input type="password" id="password" placeholder="Password..." />
+  <button onclick="checkPassword()">Masuk</button>
+
+  <p id="error" style="color:red; display:none;">Password salah!</p>
+</div>
+
+<script>
+  const PASS = "bismillah10";
+
+  function checkPassword() {
+    const input = document.getElementById("password").value;
+    if (input === PASS) {
+      window.location.href = "tts.html";
+    } else {
+      document.getElementById("error").style.display = "block";
+    }
+  }
+</script>
+
+</body>
+</html>
