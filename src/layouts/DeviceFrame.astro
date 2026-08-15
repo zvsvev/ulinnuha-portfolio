@@ -33,20 +33,22 @@ const descAttr = desc ?? 'Muhammad Ulinnuha — software engineer & vibecoder. T
     <div class="page-backdrop" aria-hidden="true"></div>
 
     <main class="device">
-      <!-- Status bar -->
-      <div class="statusbar" role="presentation">
-        <span class="sb-carrier">ulinnuha</span>
-        <span class="sb-right">
-          <span class="sb-signal" aria-hidden="true">▮▮▮</span>
-          <span class="sb-battery" aria-hidden="true">
-            <span class="batt"><span class="level"></span></span>
+      <div class="device-inner">
+        <!-- Status bar -->
+        <div class="statusbar" role="presentation">
+          <span class="sb-carrier">ulinnuha</span>
+          <span class="sb-right">
+            <span class="sb-signal" aria-hidden="true">▮▮▮</span>
+            <span class="sb-battery" aria-hidden="true">
+              <span class="batt"><span class="level"></span></span>
+            </span>
           </span>
-        </span>
-      </div>
+        </div>
 
-      <!-- The phone "screen" content -->
-      <div class="screen" role="main">
-        <slot />
+        <!-- The phone "screen" content -->
+        <div class="screen" role="main">
+          <slot />
+        </div>
       </div>
 
       <!-- Home indicator -->

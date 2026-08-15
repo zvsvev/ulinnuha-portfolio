@@ -82,6 +82,8 @@ button { font-family: inherit; cursor: pointer; }
   background: #0a0a0a;
   border-radius: var(--screen-radius);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   box-shadow:
     0 0 0 10px #1b1b1b,
     0 0 0 11px #2e2e2e,
@@ -90,17 +92,23 @@ button { font-family: inherit; cursor: pointer; }
     inset 0 0 0 2px rgba(255,255,255,0.06);
 }
 
+.device-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* Status bar */
 .statusbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  flex-shrink: 0;
   height: 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 8px;
+  padding: 2px 8px 0;
   font-family: var(--font-status);
   font-size: 11px;
   font-weight: 700;
@@ -136,7 +144,7 @@ button { font-family: inherit; cursor: pointer; }
 /* Home indicator / bottom bar */
 .home-indicator {
   position: absolute;
-  bottom: 4px;
+  bottom: calc(4px + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
   width: 110px;
@@ -144,12 +152,14 @@ button { font-family: inherit; cursor: pointer; }
   border-radius: 3px;
   background: rgba(255,255,255,0.55);
   z-index: 50;
+  pointer-events: none;
 }
 
 /* ---------- Phone "apps" are full-screen screens ---------- */
 .screen {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  flex: 1;
+  min-height: 0;
   background: var(--wallpaper);
   overflow-y: auto;
   overflow-x: hidden;
