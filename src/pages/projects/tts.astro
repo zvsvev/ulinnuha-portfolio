@@ -1,0 +1,10 @@
+---
+import DeviceFrame from '../../layouts/DeviceFrame.astro';
+import AppScreen from '../../components/AppScreen.astro';
+import TTSApp from '../../components/TTSApp.tsx';
+---
+
+<DeviceFrame title="Text to Speech" desc="A retro text-to-speech tool.">
+  <AppScreen title="Text to Speech" backTo="/projects" />
+  <TTSApp client:only="react" />
+</DeviceFrame>
