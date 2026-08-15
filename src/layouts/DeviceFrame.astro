@@ -1,0 +1,56 @@
+---
+// DeviceFrame.astro — the iPhone shell shared by every page.
+// Props:
+//   title    — page <title>
+//   desc     — meta description
+//   clock    — status bar time (default: "9:41")
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  desc?: string;
+  clock?: string;
+}
+
+const { title, desc, clock = '9:41' } = Astro.props;
+const pageTitle = title.includes('ulinnuha') ? title : `${title} — ulinnuha`;
+const descAttr = desc ?? 'Muhammad Ulinnuha — software engineer & vibecoder. This site is an old iPhone.';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content={descAttr} />
+    <meta name="theme-color" content="#1b1b1b" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div class="page-backdrop" aria-hidden="true"></div>
+
+    <main class="device">
+      <!-- Status bar -->
+      <div class="statusbar" role="presentation">
+        <span class="sb-carrier">ulinnuha</span>
+        <span class="sb-right">
+          <span class="sb-signal" aria-hidden="true">▮▮▮</span>
+          <span class="sb-battery" aria-hidden="true">
+            <span class="batt"><span class="level"></span></span>
+          </span>
+        </span>
+      </div>
+
+      <!-- The phone "screen" content -->
+      <div class="screen" role="main">
+        <slot />
+      </div>
+
+      <!-- Home indicator -->
+      <div class="home-indicator" aria-hidden="true"></div>
+    </main>
+  </body>
+</html>

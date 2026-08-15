@@ -1,0 +1,47 @@
+---
+import DeviceFrame from '../layouts/DeviceFrame.astro';
+import AppScreen from '../components/AppScreen.astro';
+import { Image } from 'astro:assets';
+import img1 from '../assets/img/image1.jpg';
+import img2 from '../assets/img/image2.jpg';
+import img3 from '../assets/img/image3.jpg';
+import img4 from '../assets/img/image4.jpg';
+import img5 from '../assets/img/image5.jpg';
+import img6 from '../assets/img/image6.jpg';
+
+const photos = [
+  { src: img1, alt: 'Nature photo 1' },
+  { src: img2, alt: 'Nature photo 2' },
+  { src: img3, alt: 'Nature photo 3' },
+  { src: img4, alt: 'Nature photo 4' },
+  { src: img5, alt: 'Nature photo 5' },
+  { src: img6, alt: 'Nature photo 6' },
+];
+---
+
+<DeviceFrame title="Photos" desc="Photo gallery — ulinnuha.">
+  <AppScreen title="Photos" backTo="/" />
+
+  <div class="photo-grid">
+    {photos.map((p) => (
+      <Image src={p.src} alt={p.alt} class="photo" width={400} loading="lazy" />
+    ))}
+  </div>
+</DeviceFrame>
+
+<style>
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 2px;
+  }
+  .photo {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.12s ease;
+  }
+  .photo:active { transform: scale(0.96); opacity: 0.9; }
+</style>
