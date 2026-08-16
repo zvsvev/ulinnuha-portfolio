@@ -1,0 +1,253 @@
+/* Shared styles for the in-app views (About, Projects, Photos, Notes, Contacts) */
+
+.app-view {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 24px;
+}
+
+/* --- Profile / About --- */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 14px 8px;
+}
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.name {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.role {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* --- List group / rows --- */
+.list-group {
+  background: rgba(255,255,255,0.92);
+  border-radius: 9px;
+  margin: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+}
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.92);
+  border: none;
+  border-bottom: 1px solid #d9d9d9;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1a1a1a;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease;
+}
+.list-row:last-child { border-bottom: none; }
+.list-row:active { background: #d4e5f9; }
+.list-row-btn { font-weight: 600; }
+.row-label { flex: 1; font-size: 14px; }
+.row-value { font-size: 13px; color: var(--ios-text-secondary); }
+.row-emoji { font-size: 16px; width: 22px; text-align: center; }
+.chevron { color: #c7c7cc; font-size: 18px; }
+
+.bio-row {
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #333;
+  background: rgba(255,255,255,0.92);
+}
+
+/* --- Section labels + skill chips --- */
+.section-label {
+  margin: 14px 14px 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.skill-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 14px;
+}
+.skill-chip {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+/* --- Projects --- */
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+.project-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  background: rgba(255,255,255,0.92);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  animation: row-in 0.35s ease backwards;
+}
+@keyframes row-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.project-row:active { background: #d4e5f9; }
+.project-face {
+  position: relative;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--ios-blue-grad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, 0 -1px 1px rgba(0,0,0,0.28) inset, 0 2px 4px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+.project-emoji { filter: drop-shadow(0 1px 1px rgba(0,0,0,0.25)); }
+.project-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.project-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+.project-desc {
+  font-size: 11.5px;
+  color: #666;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.project-tags { display: flex; gap: 4px; margin-top: 3px; flex-wrap: wrap; }
+.tag {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ios-blue-dark);
+  background: #e3ecfa;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.more-note {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  padding: 8px 16px 16px;
+}
+.more-note a { text-decoration: underline; }
+
+/* --- Photos --- */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  padding: 2px;
+}
+.photo {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.12s ease;
+}
+.photo:active { transform: scale(0.96); opacity: 0.9; }
+
+/* --- Notes --- */
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+.note-card {
+  background: rgba(255,255,255,0.94);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+}
+.note-card h2 { font-size: 14px; margin-bottom: 4px; color: #1a1a1a; }
+.note-card p { font-size: 12.5px; line-height: 1.45; color: #444; }
+.note-card time {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  color: #999;
+  border-top: 1px solid #ececec;
+  padding-top: 6px;
+}
+
+/* --- Contacts --- */
+.contact-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 30px 14px 18px;
+}
+.contact-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: linear-gradient(180deg, #6ea5ff, #2f7be8);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+.contact-hero h1 {
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.contact-status {
+  font-size: 13px;
+  color: #d7f5c8;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}

@@ -5,6 +5,7 @@ export type Project = {
   description: string;
   tags: string[];
   href?: string;
+  appId?: 'padel' | 'tts';
   featured?: boolean;
   builtWith?: string;
   year: string;
@@ -29,7 +30,7 @@ export const projects: Project[] = [
     description:
       'A padel-style pong game you can play on your phone. Pick difficulty, set the win condition, and go head-to-head with the CPU.',
     tags: ['Canvas', 'JavaScript', 'Mobile'],
-    href: '/projects/padel',
+    appId: 'padel',
     featured: true,
     year: '2025',
   },
@@ -40,7 +41,7 @@ export const projects: Project[] = [
     description:
       'Type text, hear it spoken aloud — a tiny text-to-speech tool built on the browser SpeechSynthesis API.',
     tags: ['SpeechSynthesis', 'JavaScript'],
-    href: '/projects/tts',
+    appId: 'tts',
     year: '2025',
   },
 ];

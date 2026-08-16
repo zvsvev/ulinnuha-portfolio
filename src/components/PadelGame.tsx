@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import AppNav from './AppNav';
 import './PadelGame.css';
 
 const W = 320;
@@ -14,7 +15,9 @@ const DIFFICULTIES = {
 
 type Diff = keyof typeof DIFFICULTIES;
 
-export default function PadelGame() {
+type Props = { onBack: () => void };
+
+export default function PadelGame({ onBack }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stateRef = useRef({
     player: { x: W / 2 - paddleW / 2, y: H - 30, w: paddleW, h: paddleH, speed: 0.2, targetX: W / 2 - paddleW / 2 },
@@ -185,6 +188,7 @@ export default function PadelGame() {
 
   return (
     <div className="padel">
+      <AppNav title="Padel Pong" onBack={onBack} />
       <div className="padel-hud">
         <span>You <b>{score.p}</b> : <b>{score.c}</b> CPU</span>
         <button className="ios-btn plain" onClick={pause}>Pause</button>

@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import AppNav from './AppNav';
 import './TTSApp.css';
 
-export default function TTSApp() {
+type Props = { onBack: () => void };
+
+export default function TTSApp({ onBack }: Props) {
   const [text, setText] = useState('Hello! I am built with Astro and React.');
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [voice, setVoice] = useState<string>('');
@@ -41,6 +44,7 @@ export default function TTSApp() {
 
   return (
     <div className="tts">
+      <AppNav title="Text to Speech" onBack={onBack} />
       <textarea
         className="tts-text"
         value={text}

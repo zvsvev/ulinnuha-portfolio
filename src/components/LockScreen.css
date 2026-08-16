@@ -1,0 +1,75 @@
+.lockscreen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 90px;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.lock-time {
+  font-size: 62px;
+  font-weight: 200;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lock-date {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.45);
+}
+
+.slide-to-unlock {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  height: 40px;
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.slide-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  opacity: 0.9;
+}
+
+.slide-arrow {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%) translateX(var(--slide-x, 0px));
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff, #e6e6e6);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  color: #9a9a9a;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.05s linear;
+  will-change: transform;
+}

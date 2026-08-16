@@ -1,0 +1,93 @@
+.statusbar {
+  flex-shrink: 0;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 8px 0;
+  font-family: var(--font-status);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  z-index: 50;
+  pointer-events: none;
+  letter-spacing: 0.2px;
+}
+
+.sb-right {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* --- Wi-Fi --- */
+.sb-wifi {
+  position: relative;
+  width: 13px;
+  height: 10px;
+  display: inline-block;
+}
+.wifi-arc {
+  position: absolute;
+  border: 1.5px solid #fff;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  transform: rotate(45deg);
+}
+.wifi-arc.a3 { width: 10px; height: 10px; left: 1.5px; top: 1px; }
+.wifi-arc.a2 { width: 7px; height: 7px; left: 3px; top: 3px; }
+.wifi-arc.a1 { width: 4px; height: 4px; left: 4.5px; top: 5px; }
+.wifi-dot { position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%; left: 5.5px; top: 8px; }
+
+/* --- Signal bars --- */
+.sb-signal {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 10px;
+}
+.sb-signal .bar {
+  width: 3px;
+  background: #fff;
+  border-radius: 1px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+.bar.b1 { height: 3px; }
+.bar.b2 { height: 5px; }
+.bar.b3 { height: 7px; }
+.bar.b4 { height: 9px; }
+
+/* --- Battery --- */
+.sb-battery { display: inline-flex; align-items: center; }
+.batt {
+  position: relative;
+  width: 23px;
+  height: 11px;
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 2.5px;
+  padding: 1px;
+}
+.batt::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 2.5px;
+  width: 2px;
+  height: 5px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 1px;
+}
+.batt-fill {
+  display: block;
+  height: 100%;
+  border-radius: 1px;
+}
+
+/* --- Time --- */
+.sb-time {
+  min-width: 34px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,41 @@
+.app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  background: var(--ios-blue-grad);
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  box-shadow: var(--ios-glass), 0 1px 0 rgba(255,255,255,0.25) inset;
+}
+
+.nav-back,
+.nav-action {
+  min-width: 72px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.35);
+  cursor: pointer;
+  padding: 4px 0;
+  font-family: inherit;
+}
+.nav-back { text-align: left; }
+.nav-action { text-align: right; }
+
+.nav-title {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.35);
+  text-align: center;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
