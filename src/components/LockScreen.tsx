@@ -2,39 +2,47 @@ import { useRef, useState } from 'react';
 import { useClock } from '../hooks/useClock';
 import './LockScreen.css';
 
-const MAX_DRAG = 240;
-const THRESHOLD = 130;
+const MAX_DRAG = 300;
+const THRESHOLD = 160;
 
 type Props = {
   onUnlock: () => void;
 };
 
-/** Lock screen with a drag-to-unlock slider that works on touch and mouse. */
+/**
+ * Lock screen with a drag-to-unlock slider.
+ * Uses refs for drag state so fast touch sequences (down→move→up in one frame)
+ * don't hit stale React state closures.
+ */
 export default function LockScreen({ onUnlock }: Props) {
   const { time, date } = useClock();
   const [dragX, setDragX] = useState(0);
-  const [dragging, setDragging] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef(false);
+  const dragXRef = useRef(0);
   const startXRef = useRef(0);
 
   const handleDown = (e: React.PointerEvent) => {
-    setDragging(true);
+    draggingRef.current = true;
     startXRef.current = e.clientX;
     trackRef.current?.setPointerCapture(e.pointerId);
   };
 
   const handleMove = (e: React.PointerEvent) => {
-    if (!dragging) return;
+    if (!draggingRef.current) return;
     const dx = e.clientX - startXRef.current;
-    setDragX(Math.max(0, Math.min(dx, MAX_DRAG)));
+    const clamped = Math.max(0, Math.min(dx, MAX_DRAG));
+    dragXRef.current = clamped;
+    setDragX(clamped);
   };
 
   const handleUp = () => {
-    if (!dragging) return;
-    setDragging(false);
-    if (dragX >= THRESHOLD) {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    if (dragXRef.current >= THRESHOLD) {
       onUnlock();
     }
+    dragXRef.current = 0;
     setDragX(0);
   };
 
