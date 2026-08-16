@@ -12,7 +12,7 @@ type App = {
 const APPS: App[] = [
   { id: 'about', emoji: '👤', label: 'About', href: '/about', bg: 'linear-gradient(180deg,#6ea5ff,#2f7be8)' },
   { id: 'projects', emoji: '📁', label: 'Projects', href: '/projects', bg: 'linear-gradient(180deg,#f2b86a,#d97a2b)' },
-  { id: 'photos', emoji: '🌸', label: 'Photos', href: '/gallery', bg: 'linear-gradient(180deg,#fdf1c7,#e8b93c)' },
+  { id: 'photos', emoji: '🌸', label: 'Photos', href: '/galeri', bg: 'linear-gradient(180deg,#fdf1c7,#e8b93c)' },
   { id: 'notes', emoji: '📝', label: 'Notes', href: '/notes', bg: 'linear-gradient(180deg,#fffdf2,#f5e9b8)' },
   { id: 'contacts', emoji: '📇', label: 'Contacts', href: '/contact', bg: 'linear-gradient(180deg,#d8d8d8,#a8a8a8)' },
 ];
