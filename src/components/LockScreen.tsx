@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useClock } from '../hooks/useClock';
 import './LockScreen.css';
 
@@ -11,40 +11,114 @@ type Props = {
 
 /**
  * Lock screen with a drag-to-unlock slider.
- * Uses refs for drag state so fast touch sequences (down→move→up in one frame)
- * don't hit stale React state closures.
+ *
+ * Uses NATIVE non-passive touch listeners so `preventDefault()` actually
+ * stops iOS Safari from hijacking the gesture for scrolling (React's
+ * synthetic touch handlers are passive and can't do this). Pointer events
+ * are used for mouse/pen only.
  */
 export default function LockScreen({ onUnlock }: Props) {
   const { time, date } = useClock();
   const [dragX, setDragX] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
+  const onUnlockRef = useRef(onUnlock);
+  onUnlockRef.current = onUnlock;
+
   const draggingRef = useRef(false);
   const dragXRef = useRef(0);
   const startXRef = useRef(0);
 
-  const handleDown = (e: React.PointerEvent) => {
-    draggingRef.current = true;
-    startXRef.current = e.clientX;
-    trackRef.current?.setPointerCapture(e.pointerId);
-  };
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
 
-  const handleMove = (e: React.PointerEvent) => {
-    if (!draggingRef.current) return;
-    const dx = e.clientX - startXRef.current;
-    const clamped = Math.max(0, Math.min(dx, MAX_DRAG));
-    dragXRef.current = clamped;
-    setDragX(clamped);
-  };
+    const isTouch = (e: Event) => window.PointerEvent
+      ? (e as PointerEvent).pointerType === 'touch'
+      : true;
 
-  const handleUp = () => {
-    if (!draggingRef.current) return;
-    draggingRef.current = false;
-    if (dragXRef.current >= THRESHOLD) {
-      onUnlock();
-    }
-    dragXRef.current = 0;
-    setDragX(0);
-  };
+    /* ---------- Touch (mobile) ---------- */
+    const touchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      draggingRef.current = true;
+      startXRef.current = e.touches[0].clientX;
+    };
+
+    const touchMove = (e: TouchEvent) => {
+      if (!draggingRef.current) return;
+      e.preventDefault();
+      const dx = e.touches[0].clientX - startXRef.current;
+      const clamped = Math.max(0, Math.min(dx, MAX_DRAG));
+      dragXRef.current = clamped;
+      setDragX(clamped);
+    };
+
+    const touchEnd = () => {
+      if (!draggingRef.current) return;
+      draggingRef.current = false;
+      if (dragXRef.current >= THRESHOLD) {
+        onUnlockRef.current();
+      }
+      dragXRef.current = 0;
+      setDragX(0);
+    };
+
+    /* ---------- Mouse / pen ---------- */
+    const pointerDown = (e: PointerEvent) => {
+      if (isTouch(e)) return;
+      draggingRef.current = true;
+      startXRef.current = e.clientX;
+      track.setPointerCapture(e.pointerId);
+    };
+
+    const pointerMove = (e: PointerEvent) => {
+      if (!draggingRef.current || isTouch(e)) return;
+      const dx = e.clientX - startXRef.current;
+      const clamped = Math.max(0, Math.min(dx, MAX_DRAG));
+      dragXRef.current = clamped;
+      setDragX(clamped);
+    };
+
+    const pointerUp = (e: PointerEvent) => {
+      if (!draggingRef.current || isTouch(e)) return;
+      draggingRef.current = false;
+      if (dragXRef.current >= THRESHOLD) {
+        onUnlockRef.current();
+      }
+      dragXRef.current = 0;
+      setDragX(0);
+      try { track.releasePointerCapture(e.pointerId); } catch { /* noop */ }
+    };
+
+    const pointerCancel = (e: PointerEvent) => {
+      if (isTouch(e)) return;
+      draggingRef.current = false;
+      dragXRef.current = 0;
+      setDragX(0);
+      try { track.releasePointerCapture(e.pointerId); } catch { /* noop */ }
+    };
+
+    /* Non-passive = we can preventDefault and stop iOS scroll hijack */
+    track.addEventListener('touchstart', touchStart, { passive: false });
+    track.addEventListener('touchmove', touchMove, { passive: false });
+    track.addEventListener('touchend', touchEnd);
+    track.addEventListener('touchcancel', touchEnd);
+
+    track.addEventListener('pointerdown', pointerDown);
+    track.addEventListener('pointermove', pointerMove);
+    track.addEventListener('pointerup', pointerUp);
+    track.addEventListener('pointercancel', pointerCancel);
+
+    return () => {
+      track.removeEventListener('touchstart', touchStart);
+      track.removeEventListener('touchmove', touchMove);
+      track.removeEventListener('touchend', touchEnd);
+      track.removeEventListener('touchcancel', touchEnd);
+      track.removeEventListener('pointerdown', pointerDown);
+      track.removeEventListener('pointermove', pointerMove);
+      track.removeEventListener('pointerup', pointerUp);
+      track.removeEventListener('pointercancel', pointerCancel);
+    };
+  }, []);
 
   return (
     <div className="lockscreen" role="button" tabIndex={0} aria-label="Slide to unlock"
@@ -56,10 +130,6 @@ export default function LockScreen({ onUnlock }: Props) {
       <div
         ref={trackRef}
         className="slide-to-unlock"
-        onPointerDown={handleDown}
-        onPointerMove={handleMove}
-        onPointerUp={handleUp}
-        onPointerCancel={handleUp}
         style={{ '--slide-x': `${dragX}px` } as React.CSSProperties}
       >
         <span className="slide-text">slide to unlock</span>
