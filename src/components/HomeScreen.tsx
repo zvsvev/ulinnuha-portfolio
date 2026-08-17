@@ -1,4 +1,5 @@
 import AppIcon from './AppIcon';
+import { useI18n, type StringKey } from '../i18n/strings';
 import './HomeScreen.css';
 
 export type AppId =
@@ -6,18 +7,18 @@ export type AppId =
   | 'instagram' | 'facebook' | 'calculator' | 'settings'
   | 'padel' | 'tts';
 
-type AppDef = { id: AppId; emoji: string; label: string; bg: string };
+type AppDef = { id: AppId; emoji: string; labelKey: StringKey; bg: string };
 
 const APPS: AppDef[] = [
-  { id: 'about', emoji: '👤', label: 'About', bg: 'linear-gradient(180deg,#6ea5ff,#2f7be8)' },
-  { id: 'projects', emoji: '📁', label: 'Projects', bg: 'linear-gradient(180deg,#f2b86a,#d97a2b)' },
-  { id: 'photos', emoji: '🌸', label: 'Photos', bg: 'linear-gradient(180deg,#fdf1c7,#e8b93c)' },
-  { id: 'notes', emoji: '📝', label: 'Notes', bg: 'linear-gradient(180deg,#fffdf2,#f5e9b8)' },
-  { id: 'contacts', emoji: '📇', label: 'Contacts', bg: 'linear-gradient(180deg,#d8d8d8,#a8a8a8)' },
-  { id: 'instagram', emoji: '📷', label: 'Instagram', bg: 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)' },
-  { id: 'facebook', emoji: '📘', label: 'Facebook', bg: 'linear-gradient(180deg,#5b7bd6,#3b5998)' },
-  { id: 'calculator', emoji: '🧮', label: 'Calculator', bg: 'linear-gradient(180deg,#4a4a4a,#1a1a1a)' },
-  { id: 'settings', emoji: '⚙️', label: 'Settings', bg: 'linear-gradient(180deg,#9e9e9e,#6e6e6e)' },
+  { id: 'about', emoji: '👤', labelKey: 'about', bg: 'linear-gradient(180deg,#6ea5ff,#2f7be8)' },
+  { id: 'projects', emoji: '📁', labelKey: 'projects', bg: 'linear-gradient(180deg,#f2b86a,#d97a2b)' },
+  { id: 'photos', emoji: '🌸', labelKey: 'photos', bg: 'linear-gradient(180deg,#fdf1c7,#e8b93c)' },
+  { id: 'notes', emoji: '📝', labelKey: 'notes', bg: 'linear-gradient(180deg,#fffdf2,#f5e9b8)' },
+  { id: 'contacts', emoji: '📇', labelKey: 'contacts', bg: 'linear-gradient(180deg,#d8d8d8,#a8a8a8)' },
+  { id: 'instagram', emoji: '📷', labelKey: 'instagram', bg: 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)' },
+  { id: 'facebook', emoji: '📘', labelKey: 'facebook', bg: 'linear-gradient(180deg,#5b7bd6,#3b5998)' },
+  { id: 'calculator', emoji: '🧮', labelKey: 'calculator', bg: 'linear-gradient(180deg,#4a4a4a,#1a1a1a)' },
+  { id: 'settings', emoji: '⚙️', labelKey: 'settings', bg: 'linear-gradient(180deg,#9e9e9e,#6e6e6e)' },
 ];
 
 type DockDef = { id: string; emoji: string; label: string; bg: string; href: string };
@@ -34,11 +35,12 @@ type Props = {
 };
 
 export default function HomeScreen({ onOpen }: Props) {
+  const { t } = useI18n();
   return (
     <div className="home">
       <div className="app-grid">
         {APPS.map((app) => (
-          <AppIcon key={app.id} emoji={app.emoji} label={app.label} bg={app.bg} onClick={() => onOpen(app.id)} />
+          <AppIcon key={app.id} emoji={app.emoji} label={t(app.labelKey)} bg={app.bg} onClick={() => onOpen(app.id)} />
         ))}
       </div>
       <div className="dock">
