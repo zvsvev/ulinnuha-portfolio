@@ -1,5 +1,11 @@
 {
   "name": "ulinnuha-portfolio",
   "pages_build_output_dir": "./dist",
-  "compatibility_date": "2026-08-15"
+  "compatibility_date": "2026-08-15",
+  "kv_namespaces": [
+    { "binding": "MEDIA_KV", "id": "9105533b4b564117870d8d0327ce09e2" }
+  ],
+  "r2_buckets": [
+    { "binding": "MEDIA_BUCKET", "bucket_name": "ulinnuha-media" }
+  ]
 }

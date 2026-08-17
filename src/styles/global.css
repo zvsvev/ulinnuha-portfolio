@@ -24,7 +24,15 @@
 
   /* Wallpaper / background */
   --wallpaper: linear-gradient(180deg, #a7c8f0 0%, #d5e6f8 40%, #f2ead3 100%);
+  --wallpaper-dark: linear-gradient(180deg, #0b1020 0%, #1b2a44 45%, #2a1f3d 100%);
   --desktop-bg: radial-gradient(circle at 30% 20%, #2c3e50 0%, #0f171e 70%);
+
+  /* Surfaces (light theme) */
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-strong: #ffffff;
+  --surface-border: #d9d9d9;
+  --surface-active: #d4e5f9;
+  --chip-text: #333333;
 
   /* Fonts */
   --font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -210,6 +218,38 @@ button { font-family: inherit; cursor: pointer; }
   outline: 3px solid rgba(47,123,232,0.7);
   outline-offset: 1px;
 }
+
+/* ---------- Dark theme ---------- */
+[data-theme='dark'] {
+  --wallpaper: var(--wallpaper-dark);
+  --ios-blue-grad: linear-gradient(180deg, #1e4fb0 0%, #123a8a 45%, #0c2a66 100%);
+  --ios-green-grad: linear-gradient(180deg, #3f7d2a 0%, #2f5e1e 45%, #1f4512 100%);
+  --ios-text: #f2f4f8;
+  --ios-text-secondary: #a8b0bc;
+  --surface: rgba(30, 36, 48, 0.92);
+  --surface-strong: #232a38;
+  --surface-border: #3a4354;
+  --surface-active: #1e3a5f;
+  --chip-text: #d8dee8;
+}
+
+[data-theme='dark'] .screen { background: var(--wallpaper); }
+[data-theme='dark'] .list-group { background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+[data-theme='dark'] .list-row { background: var(--surface); border-bottom-color: var(--surface-border); color: var(--ios-text); }
+[data-theme='dark'] .list-row:active { background: var(--surface-active); }
+[data-theme='dark'] .bio-row { background: var(--surface); color: var(--ios-text); }
+[data-theme='dark'] .note-card { background: var(--surface); color: var(--ios-text); }
+[data-theme='dark'] .note-card p { color: var(--ios-text-secondary); }
+[data-theme='dark'] .note-card time { border-top-color: var(--surface-border); color: var(--ios-text-secondary); }
+[data-theme='dark'] .skill-chip { background: var(--surface); border-color: var(--surface-border); color: var(--chip-text); }
+[data-theme='dark'] .project-row { background: var(--surface); color: var(--ios-text); }
+[data-theme='dark'] .project-row:active { background: var(--surface-active); }
+[data-theme='dark'] .project-title { color: var(--ios-text); }
+[data-theme='dark'] .project-desc { color: var(--ios-text-secondary); }
+[data-theme='dark'] .tts-text { background: var(--surface); color: var(--ios-text); border-color: var(--surface-border); }
+[data-theme='dark'] .tts-controls { background: var(--surface); }
+[data-theme='dark'] .tts-label { color: var(--ios-text); }
+[data-theme='dark'] .ios-btn.plain { background: var(--surface-strong); color: #7aa7f5; }
 
 /* ---------- Responsive: phone fills screen on mobile ---------- */
 @media (max-width: 600px) {

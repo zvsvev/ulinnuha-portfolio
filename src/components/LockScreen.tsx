@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useClock } from '../hooks/useClock';
+import { useI18n } from '../i18n/strings';
 import './LockScreen.css';
 
 const MAX_DRAG = 300;
@@ -19,6 +20,7 @@ type Props = {
  */
 export default function LockScreen({ onUnlock }: Props) {
   const { time, date } = useClock();
+  const { t } = useI18n();
   const [dragX, setDragX] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const onUnlockRef = useRef(onUnlock);
@@ -121,7 +123,7 @@ export default function LockScreen({ onUnlock }: Props) {
   }, []);
 
   return (
-    <div className="lockscreen" role="button" tabIndex={0} aria-label="Slide to unlock"
+    <div className="lockscreen" role="button" tabIndex={0} aria-label={t('unlock')}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onUnlock(); }}
     >
       <div className="lock-time">{time}</div>
@@ -132,7 +134,7 @@ export default function LockScreen({ onUnlock }: Props) {
         className="slide-to-unlock"
         style={{ '--slide-x': `${dragX}px` } as React.CSSProperties}
       >
-        <span className="slide-text">slide to unlock</span>
+        <span className="slide-text">{t('unlock')}</span>
         <span className="slide-arrow" aria-hidden="true">»</span>
       </div>
     </div>

@@ -25,7 +25,13 @@
   padding: 4px 0;
   font-family: inherit;
 }
-.nav-back { text-align: left; }
+.nav-back {
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.nav-back-chevron { flex-shrink: 0; filter: drop-shadow(0 -1px 0 rgba(0,0,0,0.3)); }
 .nav-action { text-align: right; }
 
 .nav-title {

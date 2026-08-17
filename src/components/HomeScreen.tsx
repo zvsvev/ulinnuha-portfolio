@@ -1,7 +1,10 @@
 import AppIcon from './AppIcon';
 import './HomeScreen.css';
 
-export type AppId = 'about' | 'projects' | 'photos' | 'notes' | 'contacts' | 'padel' | 'tts';
+export type AppId =
+  | 'about' | 'projects' | 'photos' | 'notes' | 'contacts'
+  | 'instagram' | 'facebook' | 'calculator' | 'settings'
+  | 'padel' | 'tts';
 
 type AppDef = { id: AppId; emoji: string; label: string; bg: string };
 
@@ -11,6 +14,10 @@ const APPS: AppDef[] = [
   { id: 'photos', emoji: '🌸', label: 'Photos', bg: 'linear-gradient(180deg,#fdf1c7,#e8b93c)' },
   { id: 'notes', emoji: '📝', label: 'Notes', bg: 'linear-gradient(180deg,#fffdf2,#f5e9b8)' },
   { id: 'contacts', emoji: '📇', label: 'Contacts', bg: 'linear-gradient(180deg,#d8d8d8,#a8a8a8)' },
+  { id: 'instagram', emoji: '📷', label: 'Instagram', bg: 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)' },
+  { id: 'facebook', emoji: '📘', label: 'Facebook', bg: 'linear-gradient(180deg,#5b7bd6,#3b5998)' },
+  { id: 'calculator', emoji: '🧮', label: 'Calculator', bg: 'linear-gradient(180deg,#4a4a4a,#1a1a1a)' },
+  { id: 'settings', emoji: '⚙️', label: 'Settings', bg: 'linear-gradient(180deg,#9e9e9e,#6e6e6e)' },
 ];
 
 type DockDef = { id: string; emoji: string; label: string; bg: string; href: string };
