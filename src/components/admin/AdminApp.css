@@ -1,15 +1,69 @@
+/* Clean dark admin — matches the retro portfolio palette (#0f171e / #1b2330). */
+
+.admin-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+.admin-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 0 0;
+}
+.admin-head h1 { font-size: 20px; margin: 0; color: #e6eef8; }
+.admin-link-btn {
+  background: none;
+  border: 1px solid #2c3648;
+  color: #9fd0ff;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.admin-link-btn:hover { background: #1b2330; }
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  background: #1b2330;
+  border: 1px solid #2c3648;
+  border-radius: 10px;
+  padding: 4px;
+}
+.admin-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #7a8598;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 0 7px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.12s ease, background 0.12s ease;
+}
+.admin-tab:hover { color: #e6eef8; background: #223046; }
+
 .admin-card {
   background: #1b2330;
   border: 1px solid #2c3648;
   border-radius: 10px;
   padding: 18px;
-  margin-bottom: 16px;
   box-shadow: 0 4px 14px rgba(0,0,0,0.4);
 }
-.admin-card h1 { font-size: 18px; margin: 0 0 14px; }
-.admin-card h2 { font-size: 14px; margin: 0 0 10px; color: #9fd0ff; }
+.admin-card h1 { font-size: 18px; margin: 0 0 4px; }
+.admin-card h2 { font-size: 14px; margin: 0 0 12px; color: #9fd0ff; display: flex; align-items: center; gap: 8px; }
+.admin-sub { font-size: 12px; color: #7a8598; margin: 0 0 14px; }
 
-.admin-form { display: flex; flex-direction: column; gap: 10px; }
+.admin-count {
+  background: #223046;
+  color: #9fd0ff;
+  font-size: 11px;
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.admin-form { display: flex; flex-direction: column; gap: 12px; }
 .admin-form label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #a8b0bc; }
 .admin-form input, .admin-form select, .admin-form textarea {
   background: #0f171e;
@@ -19,8 +73,14 @@
   padding: 8px 10px;
   font-size: 13px;
   font-family: inherit;
+  resize: vertical;
 }
-.admin-form button, .admin-logout {
+.admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus {
+  outline: none;
+  border-color: #2f7be8;
+  box-shadow: 0 0 0 2px rgba(47,123,232,0.25);
+}
+.admin-form button {
   background: #2f7be8;
   color: #fff;
   border: none;
@@ -30,11 +90,39 @@
   font-weight: 600;
   cursor: pointer;
 }
-.admin-form button:hover, .admin-logout:hover { background: #1e4fb0; }
-.admin-logout { margin-top: 4px; width: 100%; }
+.admin-form button:hover:not(:disabled) { background: #1e4fb0; }
+.admin-form button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.admin-error { color: #ff6b6b; font-size: 12px; margin: 0; }
-.admin-msg { color: #6fbf3f; font-size: 12px; margin: 0; }
+.admin-upload-row { display: flex; gap: 14px; align-items: flex-start; }
+
+.admin-drop {
+  width: 104px;
+  height: 104px;
+  flex-shrink: 0;
+  border: 1.5px dashed #2c3648;
+  border-radius: 8px;
+  background: #0f171e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.12s ease;
+}
+.admin-drop:hover { border-color: #2f7be8; }
+.admin-drop input { display: none; }
+.admin-drop-hint { font-size: 12px; color: #7a8598; text-align: center; padding: 8px; }
+.admin-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-upload-fields { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+.admin-msg { font-size: 12px; margin: 0; }
+.admin-msg.admin-ok { color: #6fbf3f; }
+.admin-err { color: #ff6b6b !important; }
 .admin-muted { color: #5f6b7a; font-size: 12px; }
 
 .admin-post {
@@ -44,9 +132,10 @@
   padding: 8px 0;
   border-bottom: 1px solid #2c3648;
 }
+.admin-post:last-child { border-bottom: none; }
 .admin-post img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; }
-.admin-post-info { flex: 1; display: flex; flex-direction: column; font-size: 12px; }
-.admin-post-info b { color: #e6eef8; }
+.admin-post-info { flex: 1; display: flex; flex-direction: column; min-width: 0; font-size: 12px; }
+.admin-post-info b { color: #e6eef8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .admin-post-info span { color: #7a8598; font-size: 11px; }
 .admin-del {
   background: #3a2323;
@@ -55,4 +144,6 @@
   border-radius: 6px;
   width: 28px; height: 28px;
   cursor: pointer;
+  flex-shrink: 0;
 }
+.admin-del:hover { background: #4a2a2a; }

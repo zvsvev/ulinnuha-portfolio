@@ -42,6 +42,13 @@
 
 .appicon-emoji { filter: drop-shadow(0 1px 1px rgba(0,0,0,0.25)); }
 
+.appicon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
 .appicon-label {
   font-size: 10.5px;
   font-weight: 600;

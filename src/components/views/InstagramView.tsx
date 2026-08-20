@@ -21,10 +21,17 @@ const FALLBACK: IGPost[] = [
 
 type Props = { onBack: () => void };
 
+// Last-known real values (from the live fetch when it succeeds). Shown as
+// fallback so the mock app never looks broken if the proxy is unreachable.
+const KNOWN = { followers: 305, following: 364 };
+
+type LiveStats = { followers: number | null; following: number | null; posts: number | null; stale?: boolean };
+
 export default function InstagramView({ onBack }: Props) {
   const { t } = useI18n();
   const [posts, setPosts] = useState<IGPost[] | null>(null);
   const [selected, setSelected] = useState<IGPost | null>(null);
+  const [live, setLive] = useState<LiveStats>({ followers: null, following: null, posts: null });
 
   useEffect(() => {
     let alive = true;
@@ -35,7 +42,21 @@ export default function InstagramView({ onBack }: Props) {
     return () => { alive = false; };
   }, []);
 
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/instagram/profile')
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d: LiveStats) => { if (alive) setLive(d); })
+      .catch(() => { /* proxy unreachable — fall back to KNOWN values */ });
+    return () => { alive = false; };
+  }, []);
+
   const shown = posts ?? FALLBACK;
+  // Live values when available; otherwise fall back to last-known numbers so
+  // the mock app always shows something sensible (login wall → null → known).
+  const followers = live.followers ?? KNOWN.followers;
+  const following = live.following ?? KNOWN.following;
+  const liveFresh = live.followers != null && !live.stale;
 
   return (
     <div className="app-view">
@@ -55,15 +76,18 @@ export default function InstagramView({ onBack }: Props) {
           </div>
           <div className="ig-stats">
             <div><b>{shown.length}</b><span>{t('posts')}</span></div>
-            <div><b>248</b><span>{t('followers')}</span></div>
-            <div><b>186</b><span>{t('following')}</span></div>
+            <div><b>{followers ?? '—'}</b><span>{t('followers')}</span></div>
+            <div><b>{following ?? '—'}</b><span>{t('following')}</span></div>
           </div>
         </div>
         <div className="ig-bio">
           <b>Muhammad Ulinnuha</b>
           <span>vibecoder 🌱</span>
         </div>
-        <button className="ig-edit-btn">{t('edit_profile')}</button>
+        <button className="ig-edit-btn">
+          {t('edit_profile')}
+          {liveFresh && <span className="ig-live">live</span>}
+        </button>
 
         {/* Stories */}
         <div className="ig-stories">

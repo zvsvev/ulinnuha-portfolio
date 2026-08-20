@@ -48,6 +48,20 @@
   color: var(--ios-text);
   font-size: 12px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.ig-live {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #fff;
+  background: #1da1f2;
+  border-radius: 3px;
+  padding: 1px 4px;
 }
 
 .ig-stories {
