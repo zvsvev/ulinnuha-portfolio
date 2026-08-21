@@ -21,6 +21,7 @@ const strings = {
     'followers': 'followers',
     'following': 'following',
     'edit_profile': 'Edit profile',
+    'follow': 'Follow',
   },
   id: {
     'unlock': 'geser untuk membuka',
@@ -42,6 +43,7 @@ const strings = {
     'followers': 'pengikut',
     'following': 'mengikuti',
     'edit_profile': 'Edit profil',
+    'follow': 'Ikuti',
   },
 } as const;
 

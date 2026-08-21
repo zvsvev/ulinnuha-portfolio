@@ -63,41 +63,34 @@ export default function InstagramView({ onBack }: Props) {
       <AppNav title="Instagram" onBack={onBack} />
 
       <div className="ig">
-        {/* Header */}
+        {/* Header — classic brown camera + username */}
         <div className="ig-header">
+          <img className="ig-logo" src="/logo/instagram.svg" alt="" />
           <span className="ig-user">ulinnuha.eth</span>
           <span className="ig-actions">⋯</span>
         </div>
 
-        {/* Profile row */}
+        {/* Profile */}
         <div className="ig-profile">
           <div className="ig-avatar-wrap">
             <img className="ig-avatar" src="/img/avatar.jpg" alt="ulinnuha.eth" />
           </div>
           <div className="ig-stats">
             <div><b>{shown.length}</b><span>{t('posts')}</span></div>
-            <div><b>{followers ?? '—'}</b><span>{t('followers')}</span></div>
-            <div><b>{following ?? '—'}</b><span>{t('following')}</span></div>
+            <div><b>{followers}</b><span>{t('followers')}</span></div>
+            <div><b>{following}</b><span>{t('following')}</span></div>
           </div>
         </div>
+
         <div className="ig-bio">
           <b>Muhammad Ulinnuha</b>
           <span>vibecoder 🌱</span>
         </div>
-        <button className="ig-edit-btn">
-          {t('edit_profile')}
+
+        <button className="ig-follow-btn">
+          {t('follow')}
           {liveFresh && <span className="ig-live">live</span>}
         </button>
-
-        {/* Stories */}
-        <div className="ig-stories">
-          {FALLBACK.slice(0, 5).map((p, i) => (
-            <div key={i} className="ig-story">
-              <img src={i === 0 ? '/img/avatar.jpg' : p.imageUrl} alt="" />
-              <span>{i === 0 ? 'me' : `s${i}`}</span>
-            </div>
-          ))}
-        </div>
 
         {/* Photo grid */}
         <div className="ig-grid">
