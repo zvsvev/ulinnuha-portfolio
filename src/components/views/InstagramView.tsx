@@ -32,6 +32,7 @@ export default function InstagramView({ onBack }: Props) {
   const [posts, setPosts] = useState<IGPost[] | null>(null);
   const [selected, setSelected] = useState<IGPost | null>(null);
   const [live, setLive] = useState<LiveStats>({ followers: null, following: null, posts: null });
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -87,8 +88,12 @@ export default function InstagramView({ onBack }: Props) {
           <span>vibecoder 🌱</span>
         </div>
 
-        <button className="ig-follow-btn">
-          {t('follow')}
+        <button
+          className={`ig-follow-btn${isFollowing ? ' following' : ''}`}
+          onClick={() => setIsFollowing((v) => !v)}
+          aria-pressed={isFollowing}
+        >
+          {isFollowing ? t('following_active') : t('follow')}
           {liveFresh && <span className="ig-live">live</span>}
         </button>
 

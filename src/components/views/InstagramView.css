@@ -101,6 +101,17 @@
 .ig-follow-btn:active {
   background: #e8f0fe;
 }
+.ig-follow-btn.following {
+  background: #f7f7f7;
+  border-color: #dbdbdb;
+  color: #262626;
+}
+.ig-follow-btn.following:active {
+  background: #ececec;
+}
+.ig-follow-btn.following .ig-live {
+  background: #3897f0;
+}
 .ig-live {
   font-size: 9px;
   font-weight: 700;
