@@ -1,4 +1,4 @@
-/* Shared styles for the in-app views (About, Projects, Photos, Notes, Contacts) */
+/* Shared styles for the in-app views (About, Projects, Notes, Contacts) */
 
 .app-view {
   min-height: 100%;
@@ -181,21 +181,13 @@
 }
 .more-note a { text-decoration: underline; }
 
-/* --- Photos --- */
-.photo-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  padding: 2px;
+/* --- Empty feed state (IG/FB when no posts uploaded yet) --- */
+.empty-feed {
+  text-align: center;
+  color: var(--ios-text-secondary);
+  font-size: 13px;
+  padding: 40px 24px;
 }
-.photo {
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.12s ease;
-}
-.photo:active { transform: scale(0.96); opacity: 0.9; }
 
 /* --- Notes --- */
 .notes-list {

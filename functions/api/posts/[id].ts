@@ -3,7 +3,7 @@ import type { PostRecord } from '../posts';
 
 const headers = { 'Content-Type': 'application/json' };
 
-/** Admin-only: DELETE /api/posts/[id]?app=instagram|facebook|gallery */
+/** Admin-only: DELETE /api/posts/[id]?app=instagram|facebook */
 export const onRequestDelete: PagesFunction<Env> = async ({ request, env, params }) => {
   if (!(await isAuthed(request, env))) {
     return new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers });

@@ -8,7 +8,7 @@ export type PostRecord = {
   app: string;
 };
 
-const APPS = ['instagram', 'facebook', 'gallery'];
+const APPS = ['instagram', 'facebook'];
 
 const headers = { 'Content-Type': 'application/json' };
 
@@ -26,7 +26,7 @@ async function readPosts(env: Env, app: string): Promise<PostRecord[]> {
   }
 }
 
-/** Public: GET /api/posts?app=instagram|facebook|gallery */
+/** Public: GET /api/posts?app=instagram|facebook */
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const url = new URL(request.url);
   const app = url.searchParams.get('app') || '';

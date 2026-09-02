@@ -10,15 +10,6 @@ export type IGPost = {
   date: string;
 };
 
-const FALLBACK: IGPost[] = [
-  { id: 'fb-1', imageUrl: '/img/nature/image1.jpg', caption: 'sunrise ☀️', date: '2025-01-01' },
-  { id: 'fb-2', imageUrl: '/img/nature/image2.jpg', caption: 'trees', date: '2025-01-02' },
-  { id: 'fb-3', imageUrl: '/img/nature/image3.jpg', caption: 'hiking', date: '2025-01-03' },
-  { id: 'fb-4', imageUrl: '/img/nature/image4.jpg', caption: 'view', date: '2025-01-04' },
-  { id: 'fb-5', imageUrl: '/img/nature/image5.jpg', caption: 'nature', date: '2025-01-05' },
-  { id: 'fb-6', imageUrl: '/img/nature/image6.jpg', caption: 'golden hour', date: '2025-01-06' },
-];
-
 type Props = { onBack: () => void };
 
 // Last-known real values (from the live fetch when it succeeds). Shown as
@@ -38,8 +29,8 @@ export default function InstagramView({ onBack }: Props) {
     let alive = true;
     fetch('/api/posts?app=instagram')
       .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((data: IGPost[]) => { if (alive) setPosts(data.length ? data : FALLBACK); })
-      .catch(() => { if (alive) setPosts(FALLBACK); });
+      .then((data: IGPost[]) => { if (alive) setPosts(data); })
+      .catch(() => { if (alive) setPosts([]); });
     return () => { alive = false; };
   }, []);
 
@@ -52,7 +43,7 @@ export default function InstagramView({ onBack }: Props) {
     return () => { alive = false; };
   }, []);
 
-  const shown = posts ?? FALLBACK;
+  const shown = posts ?? [];
   // Live values when available; otherwise fall back to last-known numbers so
   // the mock app always shows something sensible (login wall → null → known).
   const followers = live.followers ?? KNOWN.followers;
@@ -98,13 +89,17 @@ export default function InstagramView({ onBack }: Props) {
         </button>
 
         {/* Photo grid */}
-        <div className="ig-grid">
-          {shown.map((p) => (
-            <button key={p.id} className="ig-tile" onClick={() => setSelected(p)}>
-              <img src={p.imageUrl} alt={p.caption} loading="lazy" />
-            </button>
-          ))}
-        </div>
+        {shown.length === 0 ? (
+          <p className="empty-feed">{t('no_posts_yet')}</p>
+        ) : (
+          <div className="ig-grid">
+            {shown.map((p) => (
+              <button key={p.id} className="ig-tile" onClick={() => setSelected(p)}>
+                <img src={p.imageUrl} alt={p.caption} loading="lazy" />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Lightbox */}

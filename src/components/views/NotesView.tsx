@@ -6,7 +6,7 @@ const NOTES = [
   {
     id: 'note-1',
     title: 'How this site works',
-    body: 'The whole portfolio is an old iPhone. Unlock it, tap around. Built with Astro + React on Cloudflare Pages — no servers, just vibes.\n\nEvery app you see — Instagram, Facebook, Photos, Notes — is a React view inside one page. Content you upload in the admin panel appears here automatically.',
+    body: 'The whole portfolio is an old iPhone. Unlock it, tap around. Built with Astro + React on Cloudflare Pages — no servers, just vibes.\n\nEvery app you see — Instagram, Facebook, Notes — is a React view inside one page. Content you upload in the admin panel appears here automatically.',
     time: 'Yesterday',
   },
   {

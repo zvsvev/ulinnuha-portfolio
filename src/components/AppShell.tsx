@@ -4,7 +4,6 @@ import LockScreen from './LockScreen';
 import HomeScreen, { type AppId } from './HomeScreen';
 import AboutView from './views/AboutView';
 import ProjectsView from './views/ProjectsView';
-import GaleriView from './views/GaleriView';
 import NotesView from './views/NotesView';
 import ContactView from './views/ContactView';
 import InstagramView from './views/InstagramView';
@@ -32,7 +31,6 @@ export default function AppShell() {
 
         {view === 'about' && <AboutView onBack={goHome} onOpen={open} />}
         {view === 'projects' && <ProjectsView onBack={goHome} onOpen={open} />}
-        {view === 'photos' && <GaleriView onBack={goHome} />}
         {view === 'notes' && <NotesView onBack={goHome} />}
         {view === 'contacts' && <ContactView onBack={goHome} />}
 

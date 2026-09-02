@@ -20,61 +20,6 @@ type FBPost = {
 
 type FBTab = 'feed' | 'notifications' | 'requests' | 'messenger' | 'more';
 
-const FALLBACK: FBPost[] = [
-  {
-    id: 'f1',
-    author: 'ulinnuha.eth',
-    avatar: '/img/avatar.jpg',
-    caption: 'Morning hike. Life is good. 🌄',
-    imageUrl: '/img/nature/image1.jpg',
-    time: 'Yesterday',
-    likes: 128,
-    liked: false,
-    comments: [
-      { id: 'c1', author: 'Ahmad', text: 'Beautiful view! 🔥', time: '2h' },
-      { id: 'c2', author: 'Sari', text: 'Where is this?', time: '1h' },
-      { id: 'c3', author: 'Bagas', text: 'Take me next time 🙌', time: '45m' },
-    ],
-  },
-  {
-    id: 'f2',
-    author: 'ulinnuha.eth',
-    avatar: '/img/avatar.jpg',
-    caption: 'Weekend vibes',
-    imageUrl: '/img/nature/image4.jpg',
-    time: 'Yesterday',
-    likes: 47,
-    liked: false,
-    comments: [
-      { id: 'c4', author: 'Dewi', text: 'Chill 🧘', time: '3h' },
-    ],
-  },
-  {
-    id: 'f3',
-    author: 'ulinnuha.eth',
-    avatar: '/img/avatar.jpg',
-    caption: 'Golden hour',
-    imageUrl: '/img/nature/image5.jpg',
-    time: '2 days ago',
-    likes: 3,
-    liked: false,
-    comments: [],
-  },
-  {
-    id: 'f4',
-    author: 'ulinnuha.eth',
-    avatar: '/img/avatar.jpg',
-    caption: 'Shipping something new soon…',
-    time: '3 days ago',
-    likes: 12,
-    liked: false,
-    comments: [
-      { id: 'c5', author: 'Rizky', text: '👀👀', time: '2d' },
-      { id: 'c6', author: 'Nadia', text: 'Excited!', time: '2d' },
-    ],
-  },
-];
-
 const NOTIFS: { id: string; icon: string; text: string; time: string }[] = [
   { id: 'n1', icon: '👍', text: 'Ahmad liked your photo.', time: '12m' },
   { id: 'n2', icon: '💬', text: 'Sari commented: "Where is this?"', time: '1h' },
@@ -94,33 +39,31 @@ function seedId(id: string) {
 export default function FacebookView({ onBack }: Props) {
   const { t } = useI18n();
   const [tab, setTab] = useState<FBTab>('feed');
-  const [posts, setPosts] = useState<FBPost[]>(FALLBACK);
+  const [posts, setPosts] = useState<FBPost[]>([]);
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const [drafts, setDrafts] = useState<Record<string, string>>({});
 
-  // Merge real photo posts from the CMS on top of the seeded feed.
+  // Load real photo posts from the CMS feed.
   useEffect(() => {
     let alive = true;
     fetch('/api/posts?app=facebook')
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((data: IGPost[]) => {
         if (!alive) return;
-        const fetched: FBPost[] = data
-          .filter((p) => !FALLBACK.some((f) => f.id === p.id))
-          .map((p) => ({
-            id: p.id,
-            author: 'ulinnuha.eth',
-            avatar: '/img/avatar.jpg',
-            caption: p.caption || undefined,
-            imageUrl: p.imageUrl,
-            time: p.date,
-            likes: seedId(p.id),
-            liked: false,
-            comments: [],
-          }));
-        setPosts([...fetched, ...FALLBACK]);
+        const fetched: FBPost[] = data.map((p) => ({
+          id: p.id,
+          author: 'ulinnuha.eth',
+          avatar: '/img/avatar.jpg',
+          caption: p.caption || undefined,
+          imageUrl: p.imageUrl,
+          time: p.date,
+          likes: seedId(p.id),
+          liked: false,
+          comments: [],
+        }));
+        setPosts(fetched);
       })
-      .catch(() => { if (alive) setPosts(FALLBACK); });
+      .catch(() => { if (alive) setPosts([]); });
     return () => { alive = false; };
   }, []);
 
@@ -183,6 +126,7 @@ export default function FacebookView({ onBack }: Props) {
         {/* Feed */}
         {tab === 'feed' && (
           <div className="fb-feed">
+            {posts.length === 0 && <p className="fb-empty">{t('no_posts_yet')}</p>}
             {posts.map((p) => (
               <article key={p.id} className="fb-post">
                 <div className="fb-post-head">

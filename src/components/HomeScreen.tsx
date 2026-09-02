@@ -3,7 +3,7 @@ import { useI18n, type StringKey } from '../i18n/strings';
 import './HomeScreen.css';
 
 export type AppId =
-  | 'about' | 'projects' | 'photos' | 'notes' | 'contacts'
+  | 'about' | 'projects' | 'notes' | 'contacts'
   | 'instagram' | 'facebook' | 'calculator' | 'settings'
   | 'padel' | 'tts';
 
@@ -12,7 +12,6 @@ type AppDef = { id: AppId; emoji: string; icon?: string; labelKey: StringKey; bg
 const APPS: AppDef[] = [
   { id: 'about', emoji: '👤', labelKey: 'about', bg: 'linear-gradient(180deg,#6ea5ff,#2f7be8)' },
   { id: 'projects', emoji: '📁', labelKey: 'projects', bg: 'linear-gradient(180deg,#f2b86a,#d97a2b)' },
-  { id: 'photos', emoji: '🌸', labelKey: 'photos', bg: 'linear-gradient(180deg,#fdf1c7,#e8b93c)' },
   { id: 'notes', emoji: '📝', labelKey: 'notes', bg: 'linear-gradient(180deg,#fffdf2,#f5e9b8)' },
   { id: 'contacts', emoji: '📇', labelKey: 'contacts', bg: 'linear-gradient(180deg,#d8d8d8,#a8a8a8)' },
   { id: 'instagram', emoji: '📷', icon: '/logo/instagram.svg', labelKey: 'instagram', bg: 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)' },

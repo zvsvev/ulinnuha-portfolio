@@ -6,7 +6,6 @@ type Post = { id: string; caption: string; date: string; imageUrl: string };
 const APPS = [
   { id: 'instagram', label: 'Instagram', color: '#e1306c' },
   { id: 'facebook', label: 'Facebook', color: '#3b5998' },
-  { id: 'gallery', label: 'Gallery', color: '#d97a2b' },
 ];
 
 export default function AdminApp() {
