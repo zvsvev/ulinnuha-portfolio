@@ -7,7 +7,6 @@
   justify-content: flex-start;
   padding-top: 90px;
   gap: 4px;
-  cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
@@ -45,7 +44,9 @@
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  cursor: grab;
 }
+.slide-to-unlock:active { cursor: grabbing; }
 
 .slide-text {
   font-size: 16px;

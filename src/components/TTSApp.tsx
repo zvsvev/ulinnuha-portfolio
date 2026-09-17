@@ -1,15 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppNav from './AppNav';
+import { useI18n } from '../i18n/strings';
 import './TTSApp.css';
 
 type Props = { onBack: () => void };
 
 export default function TTSApp({ onBack }: Props) {
-  const [text, setText] = useState('Hello! I am built with Astro and React.');
+  const { t } = useI18n();
+  const [text, setText] = useState(() => t('tts_default_text'));
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [voice, setVoice] = useState<string>('');
   const [rate, setRate] = useState(1);
   const [speaking, setSpeaking] = useState(false);
+  const [error, setError] = useState('');
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
   useEffect(() => {
@@ -19,11 +22,14 @@ export default function TTSApp({ onBack }: Props) {
     window.speechSynthesis.onvoiceschanged = load;
     return () => {
       window.speechSynthesis.onvoiceschanged = null;
+      // Closing the app should not leave audio playing.
+      window.speechSynthesis.cancel();
     };
   }, [supported]);
 
   const speak = () => {
     if (!supported || !text.trim()) return;
+    setError('');
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     if (voice) {
@@ -31,9 +37,9 @@ export default function TTSApp({ onBack }: Props) {
       if (v) u.voice = v;
     }
     u.rate = rate;
-    u.onstart = () => setSpeaking(true);
+    u.onstart = () => { setSpeaking(true); setError(''); };
     u.onend = () => setSpeaking(false);
-    u.onerror = () => setSpeaking(false);
+    u.onerror = () => { setSpeaking(false); setError(t('tts_error')); };
     window.speechSynthesis.speak(u);
   };
 
@@ -44,20 +50,21 @@ export default function TTSApp({ onBack }: Props) {
 
   return (
     <div className="tts">
-      <AppNav title="Text to Speech" onBack={onBack} />
+      <AppNav title={t('tts')} onBack={onBack} />
       <textarea
         className="tts-text"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Type something to hear it spoken…"
+        placeholder={t('tts_placeholder')}
+        aria-label={t('tts_placeholder')}
         rows={6}
       />
 
       <div className="tts-controls">
         <label className="tts-label">
-          Voice
+          {t('tts_voice')}
           <select value={voice} onChange={(e) => setVoice(e.target.value)}>
-            <option value="">Default</option>
+            <option value="">{t('tts_default_voice')}</option>
             {voices.map((v) => (
               <option key={v.voiceURI} value={v.voiceURI}>{v.name}</option>
             ))}
@@ -65,7 +72,7 @@ export default function TTSApp({ onBack }: Props) {
         </label>
 
         <label className="tts-label">
-          Speed: {rate.toFixed(1)}x
+          {t('tts_speed')}: {rate.toFixed(1)}x
           <input
             type="range"
             min={0.5}
@@ -79,16 +86,15 @@ export default function TTSApp({ onBack }: Props) {
 
       <div className="tts-btns">
         <button className="ios-btn green" onClick={speak} disabled={!supported}>
-          {speaking ? 'Speaking…' : '🔊 Speak'}
+          <span aria-hidden="true">🔊 </span>{speaking ? t('tts_speaking') : t('tts_speak')}
         </button>
-        {speaking && (
-          <button className="ios-btn plain" onClick={stop}>Stop</button>
-        )}
+        <button className="ios-btn plain" onClick={stop} disabled={!speaking}>
+          {t('tts_stop')}
+        </button>
       </div>
 
-      {!supported && (
-        <p className="tts-warn">Your browser does not support speech synthesis.</p>
-      )}
+      {!supported && <p className="tts-warn">{t('tts_unsupported')}</p>}
+      {error && <p className="tts-warn" role="alert">{error}</p>}
     </div>
   );
 }

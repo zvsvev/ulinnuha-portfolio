@@ -1,28 +1,29 @@
 import { useState } from 'react';
 import AppNav from '../AppNav';
+import { useI18n, type StringKey } from '../../i18n/strings';
 import './CalculatorView.css';
 
 type Op = '+' | '-' | '×' | '÷' | null;
 
-const KEYS: { label: string; kind: 'num' | 'op' | 'fn' | 'eq'; op?: Op }[] = [
-  { label: 'C', kind: 'fn' },
-  { label: '±', kind: 'fn' },
-  { label: '÷', kind: 'op', op: '÷' },
-  { label: '×', kind: 'op', op: '×' },
+const KEYS: { label: string; kind: 'num' | 'op' | 'fn' | 'eq'; op?: Op; ariaKey?: StringKey }[] = [
+  { label: 'C', kind: 'fn', ariaKey: 'calc_clear' },
+  { label: '±', kind: 'fn', ariaKey: 'calc_toggle_sign' },
+  { label: '÷', kind: 'op', op: '÷', ariaKey: 'calc_divide' },
+  { label: '×', kind: 'op', op: '×', ariaKey: 'calc_multiply' },
   { label: '7', kind: 'num' },
   { label: '8', kind: 'num' },
   { label: '9', kind: 'num' },
-  { label: '−', kind: 'op', op: '-' },
+  { label: '−', kind: 'op', op: '-', ariaKey: 'calc_subtract' },
   { label: '4', kind: 'num' },
   { label: '5', kind: 'num' },
   { label: '6', kind: 'num' },
-  { label: '+', kind: 'op', op: '+' },
+  { label: '+', kind: 'op', op: '+', ariaKey: 'calc_add' },
   { label: '1', kind: 'num' },
   { label: '2', kind: 'num' },
   { label: '3', kind: 'num' },
-  { label: '=', kind: 'eq' },
+  { label: '=', kind: 'eq', ariaKey: 'calc_equals' },
   { label: '0', kind: 'num' },
-  { label: '.', kind: 'num' },
+  { label: '.', kind: 'num', ariaKey: 'calc_decimal' },
 ];
 
 type Props = { onBack: () => void };
@@ -38,6 +39,7 @@ function calc(a: number, b: number, op: Op): number {
 }
 
 export default function CalculatorView({ onBack }: Props) {
+  const { t } = useI18n();
   const [display, setDisplay] = useState('0');
   const [acc, setAcc] = useState<number | null>(null);
   const [op, setOp] = useState<Op>(null);
@@ -93,15 +95,16 @@ export default function CalculatorView({ onBack }: Props) {
 
   return (
     <div className="app-view calc-view">
-      <AppNav title="Calculator" onBack={onBack} />
+      <AppNav title={t('calculator')} onBack={onBack} />
       <div className="calc">
-        <div className="calc-display">{display}</div>
+        <div className="calc-display" role="status" aria-live="polite" aria-atomic="true">{display}</div>
         <div className="calc-pad">
           {KEYS.map((k) => (
             <button
               key={k.label}
               className={`calc-key ${k.kind}${k.label === '0' ? ' zero' : ''}`}
               onClick={() => press(k)}
+              aria-label={k.ariaKey ? t(k.ariaKey) : undefined}
             >
               {k.label}
             </button>

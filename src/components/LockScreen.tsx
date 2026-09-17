@@ -123,15 +123,20 @@ export default function LockScreen({ onUnlock }: Props) {
   }, []);
 
   return (
-    <div className="lockscreen" role="button" tabIndex={0} aria-label={t('unlock')}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onUnlock(); }}
-    >
+    <div className="lockscreen">
       <div className="lock-time">{time}</div>
       <div className="lock-date">{date}</div>
 
       <div
         ref={trackRef}
         className="slide-to-unlock"
+        role="slider"
+        tabIndex={0}
+        aria-label={t('unlock')}
+        aria-valuemin={0}
+        aria-valuemax={THRESHOLD}
+        aria-valuenow={Math.round(dragX)}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onUnlock(); } }}
         style={{ '--slide-x': `${dragX}px` } as React.CSSProperties}
       >
         <span className="slide-text">{t('unlock')}</span>

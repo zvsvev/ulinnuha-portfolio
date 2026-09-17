@@ -13,7 +13,7 @@ interface Props {
 
 const { title, desc } = Astro.props;
 const pageTitle = title.includes('ulinnuha') ? title : `${title} — ulinnuha`;
-const descAttr = desc ?? 'Muhammad Ulinnuha — software engineer & vibecoder. This site is an old iPhone.';
+const descAttr = desc ?? 'Muhammad Ulinnuha — software engineer & vibecoder. Web apps, smart contracts, and the occasional game.';
 ---
 
 <!doctype html>
@@ -27,6 +27,19 @@ const descAttr = desc ?? 'Muhammad Ulinnuha — software engineer & vibecoder. T
     <meta name="theme-color" content="#1b1b1b" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
+    <script is:inline>
+      (function () {
+        try {
+          var theme = localStorage.getItem('ulinnuha.theme');
+          if (theme !== 'dark' && theme !== 'light') {
+            theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+          var lang = localStorage.getItem('ulinnuha.lang');
+          if (lang === 'id' || lang === 'en') document.documentElement.lang = lang;
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div class="page-backdrop" aria-hidden="true"></div>
@@ -36,7 +49,7 @@ const descAttr = desc ?? 'Muhammad Ulinnuha — software engineer & vibecoder. T
         <StatusBar client:load />
 
         <!-- The phone "screen" content -->
-        <div class="screen" role="main">
+        <div class="screen">
           <slot />
         </div>
       </div>

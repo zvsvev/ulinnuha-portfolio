@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AppNav from '../AppNav';
-import { useI18n } from '../../i18n/strings';
+import { useI18n, type StringKey, type StringVars } from '../../i18n/strings';
+import { contact } from '../../data/contact';
 import type { IGPost } from './InstagramView';
 import './FacebookView.css';
 
@@ -19,12 +20,13 @@ type FBPost = {
 };
 
 type FBTab = 'feed' | 'notifications' | 'requests' | 'messenger' | 'more';
+type ComposerKind = 'status' | 'photo' | 'checkin';
 
-const NOTIFS: { id: string; icon: string; text: string; time: string }[] = [
-  { id: 'n1', icon: '👍', text: 'Ahmad liked your photo.', time: '12m' },
-  { id: 'n2', icon: '💬', text: 'Sari commented: "Where is this?"', time: '1h' },
-  { id: 'n3', icon: '👥', text: 'Bagas accepted your friend request.', time: '3h' },
-  { id: 'n4', icon: '👍', text: 'Dewi and 3 others liked your post.', time: '5h' },
+const NOTIFS: { id: string; icon: string; time: string; key: StringKey; vars?: StringVars }[] = [
+  { id: 'n1', icon: '👍', time: '12m', key: 'fb_notif_liked', vars: { name: 'Ahmad' } },
+  { id: 'n2', icon: '💬', time: '1h', key: 'fb_notif_commented', vars: { name: 'Sari', text: 'Where is this?' } },
+  { id: 'n3', icon: '👥', time: '3h', key: 'fb_notif_friend', vars: { name: 'Bagas' } },
+  { id: 'n4', icon: '👍', time: '5h', key: 'fb_notif_liked_many', vars: { name: 'Dewi', count: 3 } },
 ];
 
 type Props = { onBack: () => void };
@@ -36,12 +38,27 @@ function seedId(id: string) {
   return 5 + (h % 120);
 }
 
+function hueFor(seed: string) {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return `hsl(${h % 360} 45% 45%)`;
+}
+
 export default function FacebookView({ onBack }: Props) {
   const { t } = useI18n();
   const [tab, setTab] = useState<FBTab>('feed');
   const [posts, setPosts] = useState<FBPost[]>([]);
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [query, setQuery] = useState('');
+  const [shareCopiedId, setShareCopiedId] = useState<string | null>(null);
+
+  // Composer (Status / Photo / Check In)
+  const [composer, setComposer] = useState<ComposerKind | null>(null);
+  const [composerText, setComposerText] = useState('');
+  const [composerImage, setComposerImage] = useState<string | null>(null);
+  const composerImageRef = useRef<string | null>(null);
+  composerImageRef.current = composerImage;
 
   // Load real photo posts from the CMS feed.
   useEffect(() => {
@@ -65,6 +82,11 @@ export default function FacebookView({ onBack }: Props) {
       })
       .catch(() => { if (alive) setPosts([]); });
     return () => { alive = false; };
+  }, []);
+
+  // Release an unattached composer image when leaving the app.
+  useEffect(() => () => {
+    if (composerImageRef.current) URL.revokeObjectURL(composerImageRef.current);
   }, []);
 
   const toggleLike = (id: string) =>
@@ -97,9 +119,67 @@ export default function FacebookView({ onBack }: Props) {
     setDrafts((prev) => ({ ...prev, [id]: '' }));
   };
 
+  const share = async (id: string) => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareCopiedId(id);
+      window.setTimeout(() => setShareCopiedId((cur) => (cur === id ? null : cur)), 2000);
+    } catch {
+      /* clipboard unavailable */
+    }
+  };
+
+  const openComposer = (kind: ComposerKind) => {
+    setComposer(kind);
+    setTab('feed');
+    setComposerText('');
+    setComposerImage(null);
+  };
+
+  const resetComposer = (revokeImage: boolean) => {
+    if (revokeImage && composerImage) URL.revokeObjectURL(composerImage);
+    setComposer(null);
+    setComposerText('');
+    setComposerImage(null);
+  };
+
+  const pickImage = (file: File | null) => {
+    if (composerImage) URL.revokeObjectURL(composerImage);
+    setComposerImage(file ? URL.createObjectURL(file) : null);
+  };
+
+  const submitPost = () => {
+    const text = composerText.trim();
+    if (!text && !composerImage) return;
+    const caption = composer === 'checkin'
+      ? [text, `📍 ${contact.location}`].filter(Boolean).join(' ')
+      : text;
+    setPosts((prev) => [
+      {
+        id: `local-${Date.now()}`,
+        author: 'ulinnuha.eth',
+        avatar: '/img/avatar.jpg',
+        caption: caption || undefined,
+        imageUrl: composerImage ?? undefined,
+        time: t('fb_just_now'),
+        likes: 0,
+        liked: false,
+        comments: [],
+      },
+      ...prev,
+    ]);
+    // Hand the object URL over to the new post — do not revoke it.
+    resetComposer(false);
+  };
+
+  const needle = query.trim().toLowerCase();
+  const visiblePosts = needle
+    ? posts.filter((p) => (p.caption ?? '').toLowerCase().includes(needle))
+    : posts;
+
   return (
     <div className="app-view">
-      <AppNav title="Facebook" onBack={onBack} />
+      <AppNav title={t('facebook')} onBack={onBack} />
 
       <div className="fb">
         {/* Top bar — dark blue, search + friends */}
@@ -107,27 +187,81 @@ export default function FacebookView({ onBack }: Props) {
           <span className="fb-f-logo">
             <img src="/logo/facebook.svg" alt="" />
           </span>
-          <span className="fb-search">
+          <label className="fb-search">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5f6b7a" strokeWidth="3" aria-hidden="true">
               <circle cx="11" cy="11" r="7" />
               <line x1="16.5" y1="16.5" x2="22" y2="22" strokeLinecap="round" />
             </svg>
-          </span>
-          <span className="fb-friends-icon">👥</span>
+            <input
+              className="fb-search-input"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t('fb_search_placeholder')}
+              aria-label={t('fb_search_placeholder')}
+            />
+          </label>
+          <span className="fb-friends-icon" aria-hidden="true">👥</span>
         </div>
 
         {/* Status bar — Status / Photo / Check In */}
         <div className="fb-statusbar">
-          <span className="fb-status-item">✏️ <b>{t('fb_status')}</b></span>
-          <span className="fb-status-item">📷 <b>{t('fb_photo')}</b></span>
-          <span className="fb-status-item">📍 <b>{t('fb_check_in')}</b></span>
+          <button className={`fb-status-item${composer === 'status' ? ' active' : ''}`} onClick={() => openComposer('status')}>
+            <span aria-hidden="true">✏️</span> <b>{t('fb_status')}</b>
+          </button>
+          <button className={`fb-status-item${composer === 'photo' ? ' active' : ''}`} onClick={() => openComposer('photo')}>
+            <span aria-hidden="true">📷</span> <b>{t('fb_photo')}</b>
+          </button>
+          <button className={`fb-status-item${composer === 'checkin' ? ' active' : ''}`} onClick={() => openComposer('checkin')}>
+            <span aria-hidden="true">📍</span> <b>{t('fb_check_in')}</b>
+          </button>
         </div>
+
+        {/* Composer */}
+        {composer && (
+          <div className="fb-compose">
+            <div className="fb-compose-head">
+              <b>{t('fb_new_post')}</b>
+              <button className="fb-compose-close" onClick={() => resetComposer(true)} aria-label={t('fb_cancel')}>✕</button>
+            </div>
+            <textarea
+              className="fb-compose-text"
+              value={composerText}
+              onChange={(e) => setComposerText(e.target.value)}
+              placeholder={t('fb_whats_on_your_mind')}
+              aria-label={t('fb_whats_on_your_mind')}
+              rows={3}
+            />
+            {composer === 'photo' && (
+              composerImage ? (
+                <div className="fb-compose-preview">
+                  <img src={composerImage} alt="" />
+                  <button className="fb-compose-remove" onClick={() => pickImage(null)}>
+                    {t('fb_remove_photo')}
+                  </button>
+                </div>
+              ) : (
+                <label className="fb-compose-file">
+                  <input type="file" accept="image/*" onChange={(e) => pickImage(e.target.files?.[0] ?? null)} />
+                  <span>📷 {t('fb_add_photo')}</span>
+                </label>
+              )
+            )}
+            <div className="fb-compose-actions">
+              <button className="fb-compose-btn" onClick={submitPost} disabled={!composerText.trim() && !composerImage}>
+                {t('fb_post')}
+              </button>
+              <button className="fb-compose-cancel" onClick={() => resetComposer(true)}>{t('fb_cancel')}</button>
+            </div>
+          </div>
+        )}
 
         {/* Feed */}
         {tab === 'feed' && (
           <div className="fb-feed">
             {posts.length === 0 && <p className="fb-empty">{t('no_posts_yet')}</p>}
-            {posts.map((p) => (
+            {posts.length > 0 && visiblePosts.length === 0 && <p className="fb-empty">{t('fb_no_results')}</p>}
+            {visiblePosts.map((p) => (
               <article key={p.id} className="fb-post">
                 <div className="fb-post-head">
                   <img className="fb-post-avatar" src={p.avatar} alt="" />
@@ -141,18 +275,20 @@ export default function FacebookView({ onBack }: Props) {
 
                 <div className="fb-post-engagement">
                   <span className="fb-eng-likes">👍 {p.likes}</span>
-                  <span className="fb-eng-comments">{p.comments.length} {t('fb_comment')}</span>
+                  <span className="fb-eng-comments">
+                    {p.comments.length} {p.comments.length === 1 ? t('fb_comment') : t('fb_comments')}
+                  </span>
                 </div>
 
                 <div className="fb-post-actions">
                   <button className={`fb-action${p.liked ? ' active' : ''}`} onClick={() => toggleLike(p.id)} aria-pressed={p.liked}>
-                    <span>👍</span> {p.liked ? t('fb_unlike') : t('fb_like')}
+                    <span aria-hidden="true">👍</span> {p.liked ? t('fb_unlike') : t('fb_like')}
                   </button>
                   <button className={`fb-action${expandedComments.has(p.id) ? ' active' : ''}`} onClick={() => toggleComments(p.id)} aria-expanded={expandedComments.has(p.id)}>
-                    <span>💬</span> {t('fb_comment')}
+                    <span aria-hidden="true">💬</span> {t('fb_comment')}
                   </button>
-                  <button className="fb-action">
-                    <span>↗</span> {t('fb_share')}
+                  <button className="fb-action" onClick={() => share(p.id)}>
+                    <span aria-hidden="true">↗</span> {shareCopiedId === p.id ? t('link_copied') : t('fb_share')}
                   </button>
                 </div>
 
@@ -160,7 +296,13 @@ export default function FacebookView({ onBack }: Props) {
                   <div className="fb-comments">
                     {p.comments.map((c) => (
                       <div key={c.id} className="fb-comment">
-                        <img className="fb-comment-avatar" src="/img/avatar.jpg" alt="" />
+                        {c.author === t('fb_you') ? (
+                          <img className="fb-comment-avatar" src="/img/avatar.jpg" alt="" />
+                        ) : (
+                          <span className="fb-comment-avatar fb-comment-initial" style={{ background: hueFor(c.author) }} aria-hidden="true">
+                            {c.author.charAt(0)}
+                          </span>
+                        )}
                         <div className="fb-comment-body">
                           <span className="fb-comment-author">{c.author}</span> {c.text}
                           <div className="fb-comment-time">{c.time}</div>
@@ -195,9 +337,9 @@ export default function FacebookView({ onBack }: Props) {
             {NOTIFS.length ? (
               NOTIFS.map((n) => (
                 <div key={n.id} className="fb-notif">
-                  <span className="fb-notif-icon">{n.icon}</span>
+                  <span className="fb-notif-icon" aria-hidden="true">{n.icon}</span>
                   <div className="fb-notif-body">
-                    <span>{n.text}</span>
+                    <span>{t(n.key, n.vars)}</span>
                     <div className="fb-notif-time">{n.time}</div>
                   </div>
                 </div>
@@ -215,11 +357,11 @@ export default function FacebookView({ onBack }: Props) {
 
         {/* Bottom nav — 2015 dark blue bar */}
         <div className="fb-bottomnav">
-          <button className={`fb-nav-item${tab === 'feed' ? ' active' : ''}`} onClick={() => setTab('feed')}>📰 <b>{t('fb_news_feed')}</b></button>
-          <button className={`fb-nav-item${tab === 'requests' ? ' active' : ''}`} onClick={() => setTab('requests')}>👥 <b>{t('fb_requests')}</b></button>
-          <button className={`fb-nav-item${tab === 'messenger' ? ' active' : ''}`} onClick={() => setTab('messenger')}>💬 <b>{t('fb_messenger')}</b></button>
-          <button className={`fb-nav-item${tab === 'notifications' ? ' active' : ''}`} onClick={() => setTab('notifications')}>🌐 <b>{t('fb_notifications')}</b></button>
-          <button className={`fb-nav-item${tab === 'more' ? ' active' : ''}`} onClick={() => setTab('more')}>☰ <b>{t('fb_more')}</b></button>
+          <button className={`fb-nav-item${tab === 'feed' ? ' active' : ''}`} onClick={() => setTab('feed')}><span aria-hidden="true">📰</span> <b>{t('fb_news_feed')}</b></button>
+          <button className={`fb-nav-item${tab === 'requests' ? ' active' : ''}`} onClick={() => setTab('requests')}><span aria-hidden="true">👥</span> <b>{t('fb_requests')}</b></button>
+          <button className={`fb-nav-item${tab === 'messenger' ? ' active' : ''}`} onClick={() => setTab('messenger')}><span aria-hidden="true">💬</span> <b>{t('fb_messenger')}</b></button>
+          <button className={`fb-nav-item${tab === 'notifications' ? ' active' : ''}`} onClick={() => setTab('notifications')}><span aria-hidden="true">🌐</span> <b>{t('fb_notifications')}</b></button>
+          <button className={`fb-nav-item${tab === 'more' ? ' active' : ''}`} onClick={() => setTab('more')}><span aria-hidden="true">☰</span> <b>{t('fb_more')}</b></button>
         </div>
       </div>
     </div>

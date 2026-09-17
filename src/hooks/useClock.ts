@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { LANG_EVENT } from '../context/AppContext';
+import { localeFor } from '../i18n/locale';
 
 export type Clock = {
   /** e.g. "9:41" or "11:07 PM" per locale */
@@ -7,22 +9,32 @@ export type Clock = {
   date: string;
 };
 
-const dateFmt = new Intl.DateTimeFormat(undefined, {
-  weekday: 'long',
-  month: 'long',
-  day: 'numeric',
-});
+function readLocale(): string {
+  if (typeof window === 'undefined') return localeFor('en');
+  try {
+    return localeFor(localStorage.getItem('ulinnuha.lang') ?? 'en');
+  } catch {
+    return localeFor('en');
+  }
+}
 
 export function useClock(): Clock {
   const [now, setNow] = useState(() => new Date());
+  const [locale, setLocale] = useState(() => localeFor('en'));
 
   useEffect(() => {
+    setLocale(readLocale());
     const id = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(id);
+    const onLangChange = () => setLocale(readLocale());
+    window.addEventListener(LANG_EVENT, onLangChange);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener(LANG_EVENT, onLangChange);
+    };
   }, []);
 
   return {
-    time: now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-    date: dateFmt.format(now),
+    time: now.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' }),
+    date: new Intl.DateTimeFormat(locale, { weekday: 'long', month: 'long', day: 'numeric' }).format(now),
   };
 }

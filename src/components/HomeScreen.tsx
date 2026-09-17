@@ -1,5 +1,6 @@
 import AppIcon from './AppIcon';
 import { useI18n, type StringKey } from '../i18n/strings';
+import { contact, socialHref } from '../data/contact';
 import './HomeScreen.css';
 
 export type AppId =
@@ -20,13 +21,13 @@ const APPS: AppDef[] = [
   { id: 'settings', emoji: '⚙️', labelKey: 'settings', bg: 'linear-gradient(180deg,#9e9e9e,#6e6e6e)' },
 ];
 
-type DockDef = { id: string; emoji: string; label: string; bg: string; href: string };
+type DockDef = { id: string; emoji: string; labelKey: StringKey; bg: string; href: string };
 
 const DOCK: DockDef[] = [
-  { id: 'call', emoji: '📞', label: 'Phone', bg: 'linear-gradient(180deg,#9bd45f,#4a9a28)', href: 'mailto:hi@ulinnuha.id' },
-  { id: 'mail', emoji: '✉️', label: 'Mail', bg: 'linear-gradient(180deg,#7aa7f5,#2f6fd0)', href: 'mailto:hi@ulinnuha.id' },
-  { id: 'safari', emoji: '🧭', label: 'Safari', bg: 'linear-gradient(180deg,#aee4f5,#2a9dc4)', href: 'https://github.com/zvsvev' },
-  { id: 'github', emoji: '🐙', label: 'GitHub', bg: 'linear-gradient(180deg,#4a4a4a,#1a1a1a)', href: 'https://github.com/zvsvev' },
+  { id: 'mail', emoji: '✉️', labelKey: 'mail', bg: 'linear-gradient(180deg,#7aa7f5,#2f6fd0)', href: `mailto:${contact.email}` },
+  { id: 'github', emoji: '🐙', labelKey: 'github', bg: 'linear-gradient(180deg,#4a4a4a,#1a1a1a)', href: socialHref('github') },
+  { id: 'telegram', emoji: '✈️', labelKey: 'telegram', bg: 'linear-gradient(180deg,#8fd3f4,#2a9dc4)', href: socialHref('telegram') },
+  { id: 'instagram', emoji: '📸', labelKey: 'instagram', bg: 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)', href: socialHref('instagram') },
 ];
 
 type Props = {
@@ -44,9 +45,7 @@ export default function HomeScreen({ onOpen }: Props) {
       </div>
       <div className="dock">
         {DOCK.map((app) => (
-          <a key={app.id} className="dock-link" href={app.href} aria-label={app.label} onClick={app.href.startsWith('http') || app.href.startsWith('mailto') ? undefined : (e) => { e.preventDefault(); onOpen(app.id as AppId); }}>
-            <AppIcon emoji={app.emoji} label={app.label} bg={app.bg} size="dock" />
-          </a>
+          <AppIcon key={app.id} emoji={app.emoji} label={t(app.labelKey)} bg={app.bg} size="dock" href={app.href} />
         ))}
       </div>
     </div>

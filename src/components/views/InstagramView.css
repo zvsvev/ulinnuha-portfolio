@@ -26,6 +26,25 @@
 .ig-actions {
   font-size: 18px;
   color: var(--ios-text);
+  background: none;
+  border: none;
+  padding: 0 2px;
+  line-height: 1;
+  cursor: pointer;
+}
+.ig-actions:active { opacity: 0.6; }
+
+/* Transient confirmation for "copy profile link" */
+.ig-toast {
+  margin: 6px 12px 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--ios-text);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
 }
 
 /* Profile */
@@ -89,7 +108,7 @@
   padding: 6px;
   border-radius: 5px;
   border: 1px solid #3b7ad9;
-  background: #fff;
+  background: var(--surface-strong);
   color: #3b7ad9;
   font-size: 12px;
   font-weight: 700;
@@ -99,15 +118,15 @@
   gap: 6px;
 }
 .ig-follow-btn:active {
-  background: #e8f0fe;
+  background: var(--surface-active);
 }
 .ig-follow-btn.following {
-  background: #f7f7f7;
-  border-color: #dbdbdb;
-  color: #262626;
+  background: var(--surface);
+  border-color: var(--surface-border);
+  color: var(--ios-text);
 }
 .ig-follow-btn.following:active {
-  background: #ececec;
+  background: var(--surface-active);
 }
 .ig-follow-btn.following .ig-live {
   background: #3897f0;
@@ -158,11 +177,29 @@
   padding: 20px;
 }
 .ig-lightbox-card {
+  position: relative;
   width: 100%;
   max-width: 320px;
-  background: #fff;
+  background: var(--surface-strong);
   border-radius: 8px;
   overflow: hidden;
+}
+.ig-lightbox-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 .ig-lightbox-card img {
   width: 100%;
@@ -172,10 +209,10 @@
 .ig-lightbox-caption {
   padding: 10px 12px;
   font-size: 12px;
-  color: #222;
+  color: var(--ios-text);
 }
 .ig-lightbox-date {
   padding: 0 12px 10px;
   font-size: 10px;
-  color: #888;
+  color: var(--ios-text-secondary);
 }

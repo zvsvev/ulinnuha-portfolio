@@ -34,15 +34,17 @@
   gap: 5px;
   font-size: 12px;
   font-weight: 600;
-  color: #444;
+  color: var(--ios-text);
 }
 
 .tts-label select {
   font-size: 13px;
   padding: 6px;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #fff;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-strong);
+  color: var(--ios-text);
+  font-family: inherit;
 }
 
 .tts-label input[type='range'] {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AppNav from '../AppNav';
 import { useI18n } from '../../i18n/strings';
 import './InstagramView.css';
@@ -12,6 +12,9 @@ export type IGPost = {
 
 type Props = { onBack: () => void };
 
+const PROFILE_URL = 'https://instagram.com/ulinnuha.eth';
+const COPY_FEEDBACK_MS = 2000;
+
 // Last-known real values (from the live fetch when it succeeds). Shown as
 // fallback so the mock app never looks broken if the proxy is unreachable.
 const KNOWN = { followers: 305, following: 364 };
@@ -24,6 +27,27 @@ export default function InstagramView({ onBack }: Props) {
   const [selected, setSelected] = useState<IGPost | null>(null);
   const [live, setLive] = useState<LiveStats>({ followers: null, following: null, posts: null });
   const [isFollowing, setIsFollowing] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  const copyProfileLink = async () => {
+    try {
+      await navigator.clipboard.writeText(PROFILE_URL);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), COPY_FEEDBACK_MS);
+    } catch {
+      /* clipboard unavailable — nothing to show */
+    }
+  };
+
+  // Close the lightbox on Escape and move focus into the dialog.
+  useEffect(() => {
+    if (!selected) return;
+    closeButtonRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSelected(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selected]);
 
   useEffect(() => {
     let alive = true;
@@ -52,15 +76,19 @@ export default function InstagramView({ onBack }: Props) {
 
   return (
     <div className="app-view">
-      <AppNav title="Instagram" onBack={onBack} />
+      <AppNav title={t('instagram')} onBack={onBack} />
 
       <div className="ig">
         {/* Header — classic brown camera + username */}
         <div className="ig-header">
           <img className="ig-logo" src="/logo/instagram.svg" alt="" />
           <span className="ig-user">ulinnuha.eth</span>
-          <span className="ig-actions">⋯</span>
+          <button className="ig-actions" onClick={copyProfileLink} aria-label={t('copy_link')}>
+            ⋯
+          </button>
         </div>
+
+        {copied && <p className="ig-toast" role="status">{t('link_copied')}</p>}
 
         {/* Profile */}
         <div className="ig-profile">
@@ -94,8 +122,13 @@ export default function InstagramView({ onBack }: Props) {
         ) : (
           <div className="ig-grid">
             {shown.map((p) => (
-              <button key={p.id} className="ig-tile" onClick={() => setSelected(p)}>
-                <img src={p.imageUrl} alt={p.caption} loading="lazy" />
+              <button
+                key={p.id}
+                className="ig-tile"
+                onClick={() => setSelected(p)}
+                aria-label={p.caption || p.date}
+              >
+                <img src={p.imageUrl} alt="" loading="lazy" />
               </button>
             ))}
           </div>
@@ -104,8 +137,11 @@ export default function InstagramView({ onBack }: Props) {
 
       {/* Lightbox */}
       {selected && (
-        <div className="ig-lightbox" onClick={() => setSelected(null)}>
+        <div className="ig-lightbox" role="dialog" aria-modal="true" aria-label={t('photo')} onClick={() => setSelected(null)}>
           <div className="ig-lightbox-card" onClick={(e) => e.stopPropagation()}>
+            <button ref={closeButtonRef} className="ig-lightbox-close" onClick={() => setSelected(null)} aria-label={t('close')}>
+              ✕
+            </button>
             <img src={selected.imageUrl} alt={selected.caption} />
             <div className="ig-lightbox-caption">
               <b>ulinnuha.eth</b> {selected.caption}

@@ -12,6 +12,8 @@ type AppCtx = {
 
 const Ctx = createContext<AppCtx | null>(null);
 
+export const LANG_EVENT = 'ulinnuha:langchange';
+
 function read<T extends string>(key: string, fallback: T, valid: T[]): T {
   if (typeof window === 'undefined') return fallback;
   try {
@@ -22,9 +24,14 @@ function read<T extends string>(key: string, fallback: T, valid: T[]): T {
   }
 }
 
+function systemTheme(): Theme {
+  if (typeof window === 'undefined' || !window.matchMedia) return 'light';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => read('ulinnuha.lang', 'en', ['en', 'id']));
-  const [theme, setThemeState] = useState<Theme>(() => read('ulinnuha.theme', 'light', ['light', 'dark']));
+  const [theme, setThemeState] = useState<Theme>(() => read('ulinnuha.theme', systemTheme(), ['light', 'dark']));
 
   const setLang = (l: Lang) => {
     setLangState(l);
@@ -41,6 +48,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (theme === 'dark') root.setAttribute('data-theme', 'dark');
     else root.removeAttribute('data-theme');
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    window.dispatchEvent(new CustomEvent(LANG_EVENT, { detail: lang }));
+  }, [lang]);
 
   return (
     <Ctx.Provider value={{ lang, setLang, theme, setTheme }}>

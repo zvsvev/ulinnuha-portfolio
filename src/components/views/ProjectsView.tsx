@@ -1,40 +1,74 @@
+import { useState } from 'react';
 import AppNav from '../AppNav';
+import { useI18n } from '../../i18n/strings';
+import { localeFor } from '../../i18n/locale';
 import { projects } from '../../data/projects';
+import { socialHref } from '../../data/contact';
 import type { AppId } from '../HomeScreen';
 import './views.css';
 
 type Props = { onBack: () => void; onOpen: (id: AppId) => void };
 
+/** "2025-03" → "March 2025" (localised). */
+function formatMonth(created: string, locale: string): string {
+  const [year, month] = created.split('-').map(Number);
+  if (!year || !month) return created;
+  return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(year, month - 1, 1));
+}
+
 export default function ProjectsView({ onBack, onOpen }: Props) {
+  const { t, lang } = useI18n();
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const selected = projects.find((p) => p.slug === selectedSlug) ?? null;
+
+  if (selected) {
+    const { appId, href } = selected;
+    return (
+      <div className="app-view">
+        <AppNav title={selected.title} onBack={() => setSelectedSlug(null)} />
+
+        <div className="project-detail">
+          <h2 className="project-detail-title">{selected.title}</h2>
+          <time className="project-detail-month" dateTime={selected.created}>
+            {formatMonth(selected.created, localeFor(lang))}
+          </time>
+          <p className="project-detail-desc">{selected.description}</p>
+
+          {href ? (
+            <a className="ios-btn" href={href} target="_blank" rel="noopener noreferrer">
+              {t('open_project')}
+            </a>
+          ) : appId ? (
+            <button className="ios-btn green" onClick={() => onOpen(appId)}>
+              {t('open_app')}
+            </button>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app-view">
-      <AppNav title="Projects" onBack={onBack} />
+      <AppNav title={t('projects')} onBack={onBack} />
 
       <div className="projects-list">
         {projects.map((p, i) => (
           <button
             key={p.slug}
-            className="project-row"
+            className="project-item"
             style={{ animationDelay: `${i * 0.05}s` }}
-            onClick={() => p.appId ? onOpen(p.appId) : p.href && window.open(p.href, '_blank')}
+            onClick={() => setSelectedSlug(p.slug)}
           >
-            <span className="project-face" aria-hidden="true">
-              <span className="project-emoji">{p.emoji}</span>
-              <span className="appicon-glass" />
-            </span>
-            <span className="project-body">
-              <span className="project-title">{p.title}</span>
-              <span className="project-desc">{p.description}</span>
-              <span className="project-tags">
-                {p.tags.slice(0, 3).map((t) => <span key={t} className="tag">{t}</span>)}
-              </span>
-            </span>
-            <span className="chevron">›</span>
+            <span className="project-item-title">{p.title}</span>
+            <span className="project-item-short">{p.short}</span>
           </button>
         ))}
       </div>
 
-      <p className="more-note">More projects on <a href="https://github.com/zvsvev" target="_blank" rel="noopener">GitHub</a>.</p>
+      <p className="more-note">
+        <a href={socialHref('github')} target="_blank" rel="noopener noreferrer">{t('more_on_github')}</a>
+      </p>
     </div>
   );
 }

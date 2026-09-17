@@ -34,8 +34,16 @@
   --surface-active: #d4e5f9;
   --chip-text: #333333;
 
+  /* Notes app — legal-pad paper */
+  --paper: #fdf9e0;
+  --paper-line: #dcd5a8;
+  --paper-margin: #e0a49a;
+  --paper-text: #33302a;
+  --paper-text-secondary: #8b8672;
+
   /* Fonts */
   --font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-hand: 'Marker Felt', 'Noteworthy', 'Chalkboard SE', 'Comic Sans MS', cursive;
   --font-status: -apple-system, 'Helvetica Neue', sans-serif;
 
   /* iPhone geometry */
@@ -92,6 +100,9 @@ button { font-family: inherit; cursor: pointer; }
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  /* Establishes a containing block so position:fixed overlays (e.g. the IG
+     lightbox) are clipped to the phone instead of the whole viewport. */
+  transform: translateZ(0);
   box-shadow:
     0 0 0 10px #1b1b1b,
     0 0 0 11px #2e2e2e,
@@ -231,6 +242,13 @@ button { font-family: inherit; cursor: pointer; }
   --surface-border: #3a4354;
   --surface-active: #1e3a5f;
   --chip-text: #d8dee8;
+
+  /* Notes paper, dimmed for dark theme */
+  --paper: #23221c;
+  --paper-line: #3b382c;
+  --paper-margin: #6d4a45;
+  --paper-text: #ece7d6;
+  --paper-text-secondary: #9c9784;
 }
 
 [data-theme='dark'] .screen { background: var(--wallpaper); }
@@ -238,14 +256,7 @@ button { font-family: inherit; cursor: pointer; }
 [data-theme='dark'] .list-row { background: var(--surface); border-bottom-color: var(--surface-border); color: var(--ios-text); }
 [data-theme='dark'] .list-row:active { background: var(--surface-active); }
 [data-theme='dark'] .bio-row { background: var(--surface); color: var(--ios-text); }
-[data-theme='dark'] .note-card { background: var(--surface); color: var(--ios-text); }
-[data-theme='dark'] .note-card p { color: var(--ios-text-secondary); }
-[data-theme='dark'] .note-card time { border-top-color: var(--surface-border); color: var(--ios-text-secondary); }
 [data-theme='dark'] .skill-chip { background: var(--surface); border-color: var(--surface-border); color: var(--chip-text); }
-[data-theme='dark'] .project-row { background: var(--surface); color: var(--ios-text); }
-[data-theme='dark'] .project-row:active { background: var(--surface-active); }
-[data-theme='dark'] .project-title { color: var(--ios-text); }
-[data-theme='dark'] .project-desc { color: var(--ios-text-secondary); }
 [data-theme='dark'] .tts-text { background: var(--surface); color: var(--ios-text); border-color: var(--surface-border); }
 [data-theme='dark'] .tts-controls { background: var(--surface); }
 [data-theme='dark'] .tts-label { color: var(--ios-text); }

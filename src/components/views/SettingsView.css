@@ -1,5 +1,6 @@
 .settings-group { margin-bottom: 4px; }
-.settings-row { width: 100%; text-align: left; border: none; }
+.settings-row { width: 100%; text-align: left; }
+.settings-row[aria-checked='true'] { background: var(--surface-active); }
 .row-check { color: var(--ios-blue); font-weight: 700; font-size: 15px; }
 .settings-hint {
   text-align: center;

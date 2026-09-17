@@ -2,13 +2,15 @@ export type Project = {
   slug: string;
   title: string;
   emoji: string;
+  /** Short one-liner for the list row — keep to 5 words or fewer. */
+  short: string;
+  /** Long description shown on the project page. */
   description: string;
-  tags: string[];
+  /** Month created, ISO year-month (YYYY-MM). */
+  created: string;
   href?: string;
   appId?: 'padel' | 'tts';
   featured?: boolean;
-  builtWith?: string;
-  year: string;
 };
 
 export const projects: Project[] = [
@@ -16,32 +18,32 @@ export const projects: Project[] = [
     slug: 'pastebags',
     title: 'Pastebags',
     emoji: '👜',
+    short: 'Token-gated paste service',
     description:
       'Solana-powered paste service with token-gated pastes, on-chain leaderboards, and win-together events. Built with Next.js, Supabase, and Solana.',
-    tags: ['Next.js', 'Solana', 'Supabase', 'TypeScript'],
+    created: '2025-03',
     href: 'https://github.com/zvsvev/pastebags',
     featured: true,
-    year: '2025',
   },
   {
     slug: 'padel',
     title: 'Mobile Padel',
     emoji: '🏓',
+    short: 'Padel pong for phones',
     description:
       'A padel-style pong game you can play on your phone. Pick difficulty, set the win condition, and go head-to-head with the CPU.',
-    tags: ['Canvas', 'JavaScript', 'Mobile'],
+    created: '2025-05',
     appId: 'padel',
     featured: true,
-    year: '2025',
   },
   {
     slug: 'tts',
     title: 'Text to Speech',
     emoji: '🗣️',
+    short: 'Type text, hear it spoken',
     description:
       'Type text, hear it spoken aloud — a tiny text-to-speech tool built on the browser SpeechSynthesis API.',
-    tags: ['SpeechSynthesis', 'JavaScript'],
+    created: '2025-08',
     appId: 'tts',
-    year: '2025',
   },
 ];

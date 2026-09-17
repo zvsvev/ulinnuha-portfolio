@@ -1,7 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Classic Facebook (2005–2019): blue rounded square with white lowercase f -->
-  <rect width="64" height="64" rx="14" fill="#3b5998"/>
-  <path
-    d="M28.5 52V35.5h-5.5v-7h5.5v-5.2c0-5.3 3.3-8.3 8.1-8.3 2.3 0 4.3.17 4.9.25v5.7h-3.4c-2.6 0-3.1 1.25-3.1 3.1v4.45h6.2l-.8 7h-5.4V52z"
-    fill="#fff"/>
+  <title>Facebook</title>
+  <!-- Facebook app icon, 2005-2019 era: #3b5998 tile with the bottom-flush white f -->
+  <defs>
+    <linearGradient id="fbTile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4b67a1"/>
+      <stop offset="0.55" stop-color="#3f5c9c"/>
+      <stop offset="1" stop-color="#35528f"/>
+    </linearGradient>
+    <clipPath id="fbClip"><rect width="64" height="64" rx="14"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#fbClip)">
+    <rect width="64" height="64" fill="url(#fbTile)"/>
+
+    <!-- classic lowercase f, stem flush with the bottom edge -->
+    <path
+      d="M35.5 64 L35.5 40 L27.5 40 L27.5 31 L35.5 31 L35.5 25.5
+         C35.5 17.5 39.5 14 47.5 14 L54 14 L54 23 L49 23
+         C45.8 23 44.5 24.6 44.5 27.8 L44.5 31 L53 31 L51.8 40 L44.5 40
+         L44.5 64 Z"
+      fill="#ffffff"/>
+  </g>
 </svg>
