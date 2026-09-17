@@ -81,7 +81,7 @@ export default function InstagramView({ onBack }: Props) {
       <div className="ig">
         {/* Header — classic brown camera + username */}
         <div className="ig-header">
-          <img className="ig-logo" src="/logo/instagram.svg" alt="" />
+          <img className="ig-logo" src="/logo/instagram.png" alt="" />
           <span className="ig-user">ulinnuha.eth</span>
           <button className="ig-actions" onClick={copyProfileLink} aria-label={t('copy_link')}>
             ⋯
