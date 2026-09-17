@@ -1,0 +1,33 @@
+/* Pay app — QRIS code */
+.pay {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* White card on purpose: a QR needs a light quiet zone to scan, even in dark mode. */
+.pay-card {
+  width: 100%;
+  max-width: 248px;
+  padding: 14px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.28);
+}
+
+.pay-qr {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* keep the modules crisp if the image is scaled up */
+  image-rendering: pixelated;
+}
+
+.pay-missing {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ios-text-secondary);
+  padding: 40px 24px;
+}

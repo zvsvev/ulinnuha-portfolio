@@ -10,6 +10,8 @@ import InstagramView from './views/InstagramView';
 import FacebookView from './views/FacebookView';
 import CalculatorView from './views/CalculatorView';
 import SettingsView from './views/SettingsView';
+import PayView from './views/PayView';
+import PhoneView from './views/PhoneView';
 import PadelGame from './PadelGame';
 import TTSApp from './TTSApp';
 import './AppShell.css';
@@ -38,6 +40,9 @@ export default function AppShell() {
         {view === 'facebook' && <FacebookView onBack={goHome} />}
         {view === 'calculator' && <CalculatorView onBack={goHome} />}
         {view === 'settings' && <SettingsView onBack={goHome} />}
+
+        {view === 'pay' && <PayView onBack={goHome} />}
+        {view === 'phone' && <PhoneView onBack={goHome} />}
 
         {view === 'padel' && (
           <div className="app-view">

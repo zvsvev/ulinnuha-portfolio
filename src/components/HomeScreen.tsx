@@ -1,12 +1,12 @@
 import AppIcon from './AppIcon';
 import { useI18n, type StringKey } from '../i18n/strings';
-import { contact, socialHref } from '../data/contact';
+import { contact } from '../data/contact';
 import './HomeScreen.css';
 
 export type AppId =
   | 'about' | 'projects' | 'notes' | 'contacts'
   | 'instagram' | 'facebook' | 'calculator' | 'settings'
-  | 'padel' | 'tts';
+  | 'padel' | 'tts' | 'pay' | 'phone';
 
 type AppDef = { id: AppId; emoji: string; icon?: string; labelKey: StringKey; bg: string };
 
@@ -21,13 +21,15 @@ const APPS: AppDef[] = [
   { id: 'settings', emoji: '⚙️', labelKey: 'settings', bg: 'linear-gradient(180deg,#9e9e9e,#6e6e6e)' },
 ];
 
-type DockDef = { id: string; emoji: string; labelKey: StringKey; bg: string; href: string };
+// Footer dock. Deliberately holds no account links (those already live in the
+// Profile app) — just the essentials plus a couple of apps.
+type DockDef = { id: string; emoji: string; labelKey: StringKey; bg: string; appId?: AppId; href?: string };
 
 const DOCK: DockDef[] = [
+  { id: 'phone', emoji: '📞', labelKey: 'phone', bg: 'linear-gradient(180deg,#9bd45f,#4a9a28)', appId: 'phone' },
   { id: 'mail', emoji: '✉️', labelKey: 'mail', bg: 'linear-gradient(180deg,#7aa7f5,#2f6fd0)', href: `mailto:${contact.email}` },
-  { id: 'github', emoji: '🐙', labelKey: 'github', bg: 'linear-gradient(180deg,#4a4a4a,#1a1a1a)', href: socialHref('github') },
-  { id: 'telegram', emoji: '✈️', labelKey: 'telegram', bg: 'linear-gradient(180deg,#8fd3f4,#2a9dc4)', href: socialHref('telegram') },
-  { id: 'instagram', emoji: '📸', labelKey: 'instagram', bg: 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)', href: socialHref('instagram') },
+  { id: 'pay', emoji: '💳', labelKey: 'pay', bg: 'linear-gradient(180deg,#5fd6a5,#2f9e6e)', appId: 'pay' },
+  { id: 'projects', emoji: '📁', labelKey: 'projects', bg: 'linear-gradient(180deg,#f2b86a,#d97a2b)', appId: 'projects' },
 ];
 
 type Props = {
@@ -44,9 +46,23 @@ export default function HomeScreen({ onOpen }: Props) {
         ))}
       </div>
       <div className="dock">
-        {DOCK.map((app) => (
-          <AppIcon key={app.id} emoji={app.emoji} label={t(app.labelKey)} bg={app.bg} size="dock" href={app.href} />
-        ))}
+        {DOCK.map((item) => {
+          const { appId, href } = item;
+          if (href) {
+            return <AppIcon key={item.id} emoji={item.emoji} label={t(item.labelKey)} bg={item.bg} size="dock" href={href} />;
+          }
+          if (!appId) return null;
+          return (
+            <AppIcon
+              key={item.id}
+              emoji={item.emoji}
+              label={t(item.labelKey)}
+              bg={item.bg}
+              size="dock"
+              onClick={() => onOpen(appId)}
+            />
+          );
+        })}
       </div>
     </div>
   );
