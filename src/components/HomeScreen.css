@@ -4,14 +4,14 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 78px 12px 30px;
+  padding: 78px calc(var(--icon-size) * 0.207) calc(var(--icon-size) * 0.517);
   overflow-y: auto;
 }
 
 .app-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 18px 6px;
+  gap: calc(var(--icon-size) * 0.31) calc(var(--icon-size) * 0.103);
   justify-items: center;
 }
 
@@ -34,10 +34,10 @@
 .dock {
   display: flex;
   justify-content: center;
-  gap: 14px;
-  padding: 10px 14px;
+  gap: calc(var(--icon-size) * 0.241);
+  padding: calc(var(--icon-size) * 0.172) calc(var(--icon-size) * 0.241);
   background: rgba(255,255,255,0.28);
-  border-radius: 14px;
+  border-radius: calc(var(--icon-size) * 0.241);
   box-shadow: 0 1px 3px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.4);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);

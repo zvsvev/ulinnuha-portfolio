@@ -50,6 +50,13 @@
   --screen-w: 320px;
   --screen-h: 480px;
   --screen-radius: 8px;
+
+  /*
+   * App icon geometry, derived from the device width so icons keep the same
+   * visual weight whether the frame is 320px (desktop) or full-bleed (mobile).
+   */
+  --icon-size: calc(var(--screen-w) * 0.181); /* 58px at 320px */
+  --icon-radius: calc(var(--icon-size) * 0.224);
 }
 
 /* ---------- Reset ---------- */

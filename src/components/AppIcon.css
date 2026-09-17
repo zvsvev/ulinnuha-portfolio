@@ -8,21 +8,21 @@
   padding: 0;
   font-family: inherit;
   cursor: pointer;
-  width: 68px;
-  border-radius: 14px;
+  width: calc(var(--icon-size) * 1.172); /* 68px at 320px */
+  border-radius: calc(var(--icon-size) * 0.241);
   transition: transform 0.12s ease, filter 0.12s ease;
 }
 .appicon:active { transform: scale(0.9); filter: brightness(1.08); }
 
 .appicon-face {
   position: relative;
-  width: 58px;
-  height: 58px;
-  border-radius: 13px;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: var(--icon-radius);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: calc(var(--icon-size) * 0.517); /* 30px at 58px */
   box-shadow:
     0 1px 0 rgba(255,255,255,0.35) inset,
     0 -1px 1px rgba(0,0,0,0.28) inset,
@@ -30,7 +30,11 @@
   overflow: hidden;
 }
 
-.appicon.dock .appicon-face { width: 50px; height: 50px; font-size: 26px; }
+.appicon.dock .appicon-face {
+  width: calc(var(--icon-size) * 0.862); /* 50px at 58px */
+  height: calc(var(--icon-size) * 0.862);
+  font-size: calc(var(--icon-size) * 0.448);
+}
 
 .appicon-glass {
   position: absolute;
@@ -50,12 +54,12 @@
 }
 
 .appicon-label {
-  font-size: 10.5px;
+  font-size: calc(var(--icon-size) * 0.181); /* 10.5px at 58px */
   font-weight: 600;
   color: #fff;
   text-shadow: 0 1px 2px rgba(0,0,0,0.7);
   text-align: center;
-  max-width: 68px;
+  max-width: calc(var(--icon-size) * 1.172);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
