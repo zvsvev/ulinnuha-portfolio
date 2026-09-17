@@ -3,22 +3,23 @@
   padding-bottom: 20px;
 }
 
-/* Header — white bar, brown camera logo, username */
+/* Header — white bar, brown camera logo, username.
+   Kept compact so the photo grid below is the main content. */
 .ig-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 6px 12px;
   background: var(--surface-strong);
   border-bottom: 1px solid var(--surface-border);
 }
 .ig-logo {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   object-fit: contain;
 }
 .ig-user {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--ios-text);
   flex: 1;
@@ -47,16 +48,16 @@
   text-align: center;
 }
 
-/* Profile */
+/* Profile — compact so the grid gets the rest of the screen */
 .ig-profile {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 14px 12px 6px;
+  gap: 12px;
+  padding: 10px 12px 4px;
 }
 .ig-avatar-wrap {
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
@@ -64,14 +65,14 @@
   justify-content: center;
 }
 .ig-avatar {
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   object-fit: cover;
 }
 .ig-stats {
   display: flex;
-  gap: 18px;
+  gap: 14px;
   flex: 1;
   justify-content: center;
 }
@@ -79,22 +80,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--ios-text);
 }
 .ig-stats b {
-  font-size: 15px;
+  font-size: 14px;
 }
 .ig-stats span {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--ios-text-secondary);
 }
 
 .ig-bio {
   display: flex;
   flex-direction: column;
-  padding: 4px 12px;
-  font-size: 12px;
+  padding: 2px 12px;
+  font-size: 11.5px;
   color: var(--ios-text);
 }
 .ig-bio span {
@@ -103,14 +104,14 @@
 
 /* Blue Follow button (2015 thin-outline style) */
 .ig-follow-btn {
-  margin: 8px 12px;
+  margin: 6px 12px;
   width: calc(100% - 24px);
-  padding: 6px;
+  padding: 5px;
   border-radius: 5px;
   border: 1px solid #3b7ad9;
   background: var(--surface-strong);
   color: #3b7ad9;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -142,12 +143,14 @@
   padding: 1px 4px;
 }
 
-/* Photo grid — 3 columns, square tiles */
+/* Photo grid — 3 columns, square tiles. The main content of the app. */
 .ig-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
+  margin-top: 8px;
   padding: 2px;
+  border-top: 1px solid var(--surface-border);
 }
 .ig-tile {
   border: none;
