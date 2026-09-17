@@ -20,14 +20,12 @@ export default function PayView({ onBack }: Props) {
         {missing ? (
           <p className="pay-missing">{t('qris_missing')}</p>
         ) : (
-          <div className="pay-card">
-            <img
-              className="pay-qr"
-              src={QRIS_SRC}
-              alt={t('pay')}
-              onError={() => setMissing(true)}
-            />
-          </div>
+          <img
+            className="pay-qr"
+            src={QRIS_SRC}
+            alt={t('pay')}
+            onError={() => setMissing(true)}
+          />
         )}
       </div>
     </div>
