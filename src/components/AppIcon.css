@@ -31,18 +31,23 @@
 }
 
 /*
- * Dock icons carry no label, so the item shrinks to the face. Without this it
- * inherits the grid item's width (sized for a label underneath) and four of
- * them overflow the dock background.
+ * Dock icons render without the coloured tile: the dock background is the only
+ * rounded surface, so the item keeps just its glyph. The box is kept at face
+ * size so spacing/layout is unchanged.
  */
 .appicon.dock {
   width: calc(var(--icon-size) * 0.862); /* 50px at 320px */
   gap: 0;
 }
 .appicon.dock .appicon-face {
-  width: calc(var(--icon-size) * 0.862); /* 50px at 58px */
+  width: calc(var(--icon-size) * 0.862);
   height: calc(var(--icon-size) * 0.862);
-  font-size: calc(var(--icon-size) * 0.448);
+  font-size: calc(var(--icon-size) * 0.586);
+  background: none;
+  box-shadow: none;
+}
+.appicon.dock .appicon-emoji {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.45));
 }
 
 .appicon-glass {
