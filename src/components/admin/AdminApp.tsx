@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { downscaleImage, formatBytes } from './downscaleImage';
 import './AdminApp.css';
 
 type Post = { id: string; caption: string; date: string; imageUrl: string };
@@ -23,6 +24,7 @@ export default function AdminApp() {
   const [posts, setPosts] = useState<Record<string, Post[]>>({});
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [preparing, setPreparing] = useState(false);
 
   useEffect(() => {
     fetch('/admin/session')
@@ -64,10 +66,20 @@ export default function AdminApp() {
     setAuthed(false);
   };
 
-  const onPickFile = (f: File | null) => {
-    setFile(f);
+  const onPickFile = async (raw: File | null) => {
+    if (!raw) {
+      setFile(null);
+      setPreparing(false);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+      return;
+    }
+    setPreparing(true);
+    const processed = await downscaleImage(raw);
+    setPreparing(false);
+    setFile(processed);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPreviewUrl(f ? URL.createObjectURL(f) : null);
+    setPreviewUrl(URL.createObjectURL(processed));
   };
 
   const upload = async (e: React.FormEvent) => {
@@ -90,7 +102,7 @@ export default function AdminApp() {
       setMsg({ kind: 'ok', text: 'Uploaded ✓' });
       setCaption('');
       setDate(new Date().toISOString().slice(0, 10));
-      onPickFile(null);
+      void onPickFile(null);
       const list = await fetch(`/api/posts?app=${tab}`).then((r) => r.json());
       setPosts((prev) => ({ ...prev, [tab]: list }));
     } catch {
@@ -162,9 +174,15 @@ export default function AdminApp() {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
+                onChange={(e) => {
+                  const picked = e.target.files?.[0] ?? null;
+                  e.target.value = ''; // allow re-picking the same file
+                  void onPickFile(picked);
+                }}
               />
-              {previewUrl ? (
+              {preparing ? (
+                <span className="admin-drop-hint">Optimising…</span>
+              ) : previewUrl ? (
                 <img src={previewUrl} alt="preview" className="admin-preview" />
               ) : (
                 <span className="admin-drop-hint">+ Choose image</span>
@@ -172,6 +190,9 @@ export default function AdminApp() {
             </label>
 
             <div className="admin-upload-fields">
+              {file && !preparing && (
+                <p className="admin-muted">Ready: {formatBytes(file.size)}</p>
+              )}
               <label>
                 Caption
                 <textarea value={caption} onChange={(e) => setCaption(e.target.value)} rows={2} maxLength={500} />
@@ -183,7 +204,7 @@ export default function AdminApp() {
             </div>
           </div>
 
-          <button type="submit" disabled={busy || !file}>
+          <button type="submit" disabled={busy || preparing || !file}>
             {busy ? 'Uploading…' : 'Upload'}
           </button>
           {msg && <p className={`admin-msg ${msg.kind === 'err' ? 'admin-err' : ''}`}>{msg.text}</p>}
