@@ -30,6 +30,15 @@
   overflow: hidden;
 }
 
+/*
+ * Dock icons carry no label, so the item shrinks to the face. Without this it
+ * inherits the grid item's width (sized for a label underneath) and four of
+ * them overflow the dock background.
+ */
+.appicon.dock {
+  width: calc(var(--icon-size) * 0.862); /* 50px at 320px */
+  gap: 0;
+}
 .appicon.dock .appicon-face {
   width: calc(var(--icon-size) * 0.862); /* 50px at 58px */
   height: calc(var(--icon-size) * 0.862);
