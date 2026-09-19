@@ -18,7 +18,3 @@ export const contact = {
   email: 'hi@ulinnuha.id',
   location: 'Indonesia',
 };
-
-export function socialHref(id: SocialId): string {
-  return socials.find((s) => s.id === id)?.href ?? '';
-}

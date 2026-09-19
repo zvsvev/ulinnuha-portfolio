@@ -3,7 +3,6 @@ import AppNav from '../AppNav';
 import { useI18n } from '../../i18n/strings';
 import { localeFor } from '../../i18n/locale';
 import { projects } from '../../data/projects';
-import { socialHref } from '../../data/contact';
 import type { AppId } from '../HomeScreen';
 import './views.css';
 
@@ -65,10 +64,6 @@ export default function ProjectsView({ onBack, onOpen }: Props) {
           </button>
         ))}
       </div>
-
-      <p className="more-note">
-        <a href={socialHref('github')} target="_blank" rel="noopener noreferrer">{t('more_on_github')}</a>
-      </p>
     </div>
   );
 }

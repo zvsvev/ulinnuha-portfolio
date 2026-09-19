@@ -56,8 +56,6 @@ export default function SettingsView({ onBack }: Props) {
           {theme === 'dark' && <span className="row-check" aria-hidden="true">✓</span>}
         </button>
       </div>
-
-      <p className="settings-hint">{t('settings_saved')}</p>
     </div>
   );
 }

@@ -147,3 +147,66 @@
   flex-shrink: 0;
 }
 .admin-del:hover { background: #4a2a2a; }
+
+/* --- Shared action row (notes / profile tools) --- */
+.admin-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.admin-actions button { flex: 1; }
+/* the form's blue primary is the default; this is the quieter companion */
+.admin-form button.admin-btn-ghost {
+  background: none;
+  border: 1px solid #2c3648;
+  color: #9fd0ff;
+}
+.admin-form button.admin-btn-ghost:hover:not(:disabled) { background: #1b2330; }
+
+/* --- Notes tool --- */
+.admin-note {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid #2c3648;
+}
+.admin-note-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.admin-note-head input { flex: 1; min-width: 0; }
+/* keep the delete button's red treatment inside a form */
+.admin-form button.admin-del {
+  background: #3a2323;
+  color: #ff9c9c;
+  border: 1px solid #5a3030;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+}
+.admin-form button.admin-del:hover:not(:disabled) { background: #4a2a2a; }
+
+/* --- Profile tool --- */
+.admin-avatar-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+}
+.admin-avatar-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.admin-avatar-current {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #0f171e;
+  border: 1.5px solid #2c3648;
+  display: block;
+}

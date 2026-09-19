@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import AppNav from '../AppNav';
 import { useI18n, type StringKey, type StringVars } from '../../i18n/strings';
 import { contact } from '../../data/contact';
+import { useAvatar } from '../../hooks/useAvatar';
 import type { IGPost } from './InstagramView';
 import './FacebookView.css';
 
@@ -10,7 +11,6 @@ type FBComment = { id: string; author: string; text: string; time: string };
 type FBPost = {
   id: string;
   author: string;
-  avatar: string;
   caption?: string;
   imageUrl?: string;
   time: string;
@@ -46,6 +46,7 @@ function hueFor(seed: string) {
 
 export default function FacebookView({ onBack }: Props) {
   const { t } = useI18n();
+  const avatar = useAvatar();
   const [tab, setTab] = useState<FBTab>('feed');
   const [posts, setPosts] = useState<FBPost[]>([]);
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
@@ -70,7 +71,6 @@ export default function FacebookView({ onBack }: Props) {
         const fetched: FBPost[] = data.map((p) => ({
           id: p.id,
           author: 'ulinnuha.eth',
-          avatar: '/img/avatar.jpg',
           caption: p.caption || undefined,
           imageUrl: p.imageUrl,
           time: p.date,
@@ -158,7 +158,6 @@ export default function FacebookView({ onBack }: Props) {
       {
         id: `local-${Date.now()}`,
         author: 'ulinnuha.eth',
-        avatar: '/img/avatar.jpg',
         caption: caption || undefined,
         imageUrl: composerImage ?? undefined,
         time: t('fb_just_now'),
@@ -264,7 +263,7 @@ export default function FacebookView({ onBack }: Props) {
             {visiblePosts.map((p) => (
               <article key={p.id} className="fb-post">
                 <div className="fb-post-head">
-                  <img className="fb-post-avatar" src={p.avatar} alt="" />
+                  <img className="fb-post-avatar" src={avatar} alt="" />
                   <div>
                     <div className="fb-post-name">{p.author}</div>
                     <div className="fb-post-time">{p.time}</div>
@@ -297,7 +296,7 @@ export default function FacebookView({ onBack }: Props) {
                     {p.comments.map((c) => (
                       <div key={c.id} className="fb-comment">
                         {c.author === t('fb_you') ? (
-                          <img className="fb-comment-avatar" src="/img/avatar.jpg" alt="" />
+                          <img className="fb-comment-avatar" src={avatar} alt="" />
                         ) : (
                           <span className="fb-comment-avatar fb-comment-initial" style={{ background: hueFor(c.author) }} aria-hidden="true">
                             {c.author.charAt(0)}

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import AppNav from '../AppNav';
 import { useI18n } from '../../i18n/strings';
+import { useAvatar } from '../../hooks/useAvatar';
 import './InstagramView.css';
 
 export type IGPost = {
@@ -23,6 +24,7 @@ type LiveStats = { followers: number | null; following: number | null; posts: nu
 
 export default function InstagramView({ onBack }: Props) {
   const { t } = useI18n();
+  const avatar = useAvatar();
   const [posts, setPosts] = useState<IGPost[] | null>(null);
   const [selected, setSelected] = useState<IGPost | null>(null);
   const [live, setLive] = useState<LiveStats>({ followers: null, following: null, posts: null });
@@ -93,7 +95,7 @@ export default function InstagramView({ onBack }: Props) {
         {/* Profile */}
         <div className="ig-profile">
           <div className="ig-avatar-wrap">
-            <img className="ig-avatar" src="/img/avatar.jpg" alt="ulinnuha.eth" />
+            <img className="ig-avatar" src={avatar} alt="ulinnuha.eth" />
           </div>
           <div className="ig-stats">
             <div><b>{shown.length}</b><span>{t('posts')}</span></div>

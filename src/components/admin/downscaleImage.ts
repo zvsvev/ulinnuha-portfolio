@@ -1,4 +1,4 @@
-const MAX_DIM = 1600;
+const DEFAULT_MAX_DIM = 1600;
 const JPEG_QUALITY = 0.82;
 /** Leave already-light images untouched. */
 const KEEP_UNDER_BYTES = 400 * 1024;
@@ -10,8 +10,10 @@ const KEEP_UNDER_BYTES = 400 * 1024;
  * load — the grid requests every image. Resizing to a sane longest edge and
  * re-encoding cuts that by an order of magnitude. Falls back to the original
  * file whenever anything goes wrong, so an upload is never blocked.
+ *
+ * `maxDim` lets smaller surfaces (the profile picture) request a tighter cap.
  */
-export async function downscaleImage(file: File): Promise<File> {
+export async function downscaleImage(file: File, maxDim = DEFAULT_MAX_DIM): Promise<File> {
   if (!file.type.startsWith('image/')) return file;
 
   let bitmap: ImageBitmap;
@@ -23,7 +25,7 @@ export async function downscaleImage(file: File): Promise<File> {
   }
 
   const { width, height } = bitmap;
-  const scale = Math.min(1, MAX_DIM / Math.max(width, height));
+  const scale = Math.min(1, maxDim / Math.max(width, height));
 
   if (scale === 1 && file.size <= KEEP_UNDER_BYTES) {
     bitmap.close();

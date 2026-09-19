@@ -1,5 +1,6 @@
 import AppNav from '../AppNav';
 import { useI18n } from '../../i18n/strings';
+import { useAvatar } from '../../hooks/useAvatar';
 import { socials, contact } from '../../data/contact';
 import './views.css';
 
@@ -7,15 +8,15 @@ type Props = { onBack: () => void };
 
 export default function ContactView({ onBack }: Props) {
   const { t } = useI18n();
+  const avatar = useAvatar();
 
   return (
     <div className="app-view">
       <AppNav title={t('contacts')} onBack={onBack} />
 
       <div className="contact-hero">
-        <img className="contact-avatar" src="/img/avatar.jpg" alt="Muhammad Ulinnuha" width="84" height="84" />
+        <img className="contact-avatar" src={avatar} alt="Muhammad Ulinnuha" width="84" height="84" />
         <h1>Muhammad Ulinnuha</h1>
-        <p className="contact-status">{t('available_for_work')}</p>
       </div>
 
       <div className="list-group">
