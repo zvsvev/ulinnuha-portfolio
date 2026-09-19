@@ -3,7 +3,6 @@ import { useApp, type Lang } from '../context/AppContext';
 const strings = {
   en: {
     'unlock': 'slide to unlock',
-    'about': 'About',
     'projects': 'Projects',
     'notes': 'Notes',
     'note': 'Note',
@@ -28,10 +27,6 @@ const strings = {
     'delete': 'Delete',
     'pay': 'Pay',
     'qris_missing': 'No QRIS code yet',
-    'stack': 'Stack',
-    'featured': 'Featured',
-    'find_me': 'Find me',
-    'based_in': 'Based in',
     'email': 'Email',
     'location': 'Location',
     'available_for_work': 'Available for work',
@@ -121,7 +116,6 @@ const strings = {
   },
   id: {
     'unlock': 'geser untuk membuka',
-    'about': 'Tentang',
     'projects': 'Proyek',
     'notes': 'Catatan',
     'note': 'Catatan',
@@ -146,10 +140,6 @@ const strings = {
     'delete': 'Hapus',
     'pay': 'Bayar',
     'qris_missing': 'Belum ada kode QRIS',
-    'stack': 'Teknologi',
-    'featured': 'Unggulan',
-    'find_me': 'Temukan saya',
-    'based_in': 'Berlokasi di',
     'email': 'Email',
     'location': 'Lokasi',
     'available_for_work': 'Terbuka untuk kerja',

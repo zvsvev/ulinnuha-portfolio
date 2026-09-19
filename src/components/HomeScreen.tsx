@@ -4,14 +4,13 @@ import { contact } from '../data/contact';
 import './HomeScreen.css';
 
 export type AppId =
-  | 'about' | 'projects' | 'notes' | 'contacts'
+  | 'projects' | 'notes' | 'contacts'
   | 'instagram' | 'facebook' | 'calculator' | 'settings'
   | 'padel' | 'tts' | 'pay' | 'phone';
 
 type AppDef = { id: AppId; emoji: string; icon?: string; labelKey: StringKey; bg: string };
 
 const APPS: AppDef[] = [
-  { id: 'about', emoji: '👤', labelKey: 'about', bg: 'linear-gradient(180deg,#6ea5ff,#2f7be8)' },
   { id: 'projects', emoji: '📁', labelKey: 'projects', bg: 'linear-gradient(180deg,#f2b86a,#d97a2b)' },
   { id: 'notes', emoji: '📝', labelKey: 'notes', bg: 'linear-gradient(180deg,#fffdf2,#f5e9b8)' },
   { id: 'contacts', emoji: '📇', labelKey: 'contacts', bg: 'linear-gradient(180deg,#d8d8d8,#a8a8a8)' },
@@ -22,15 +21,14 @@ const APPS: AppDef[] = [
 ];
 
 // Footer dock. Deliberately holds no account links (those already live in the
-// Profile app) — just the essentials plus a couple of apps. Dock icons render
-// without a coloured tile, so they carry no gradient.
-type DockDef = { id: string; emoji: string; labelKey: StringKey; appId?: AppId; href?: string };
+// Contacts app) — just the essentials plus a couple of apps.
+type DockDef = { id: string; emoji: string; labelKey: StringKey; bg: string; appId?: AppId; href?: string };
 
 const DOCK: DockDef[] = [
-  { id: 'phone', emoji: '📞', labelKey: 'phone', appId: 'phone' },
-  { id: 'mail', emoji: '✉️', labelKey: 'mail', href: `mailto:${contact.email}` },
-  { id: 'pay', emoji: '💳', labelKey: 'pay', appId: 'pay' },
-  { id: 'projects', emoji: '📁', labelKey: 'projects', appId: 'projects' },
+  { id: 'phone', emoji: '📞', labelKey: 'phone', bg: 'linear-gradient(180deg,#9bd45f,#4a9a28)', appId: 'phone' },
+  { id: 'mail', emoji: '✉️', labelKey: 'mail', bg: 'linear-gradient(180deg,#7aa7f5,#2f6fd0)', href: `mailto:${contact.email}` },
+  { id: 'pay', emoji: '💳', labelKey: 'pay', bg: 'linear-gradient(180deg,#5fd6a5,#2f9e6e)', appId: 'pay' },
+  { id: 'projects', emoji: '📁', labelKey: 'projects', bg: 'linear-gradient(180deg,#f2b86a,#d97a2b)', appId: 'projects' },
 ];
 
 type Props = {
@@ -50,7 +48,7 @@ export default function HomeScreen({ onOpen }: Props) {
         {DOCK.map((item) => {
           const { appId, href } = item;
           if (href) {
-            return <AppIcon key={item.id} emoji={item.emoji} label={t(item.labelKey)} size="dock" href={href} />;
+            return <AppIcon key={item.id} emoji={item.emoji} label={t(item.labelKey)} bg={item.bg} size="dock" href={href} />;
           }
           if (!appId) return null;
           return (
@@ -58,6 +56,7 @@ export default function HomeScreen({ onOpen }: Props) {
               key={item.id}
               emoji={item.emoji}
               label={t(item.labelKey)}
+              bg={item.bg}
               size="dock"
               onClick={() => onOpen(appId)}
             />

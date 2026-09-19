@@ -1,40 +1,10 @@
-/* Shared styles for the in-app views (About, Projects, Notes, Contacts) */
+/* Shared styles for the in-app views (Projects, Notes, Contacts, Settings) */
 
 .app-view {
   min-height: 100%;
   display: flex;
   flex-direction: column;
   padding-bottom: 24px;
-}
-
-/* --- Profile / About --- */
-.profile {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 14px 8px;
-}
-.avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 3px solid #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-}
-.name {
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.1;
-  color: #fff;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-}
-.role {
-  margin-top: 4px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-  opacity: 0.9;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
 
 /* --- List group / rows --- */
@@ -63,22 +33,13 @@
 }
 .list-row:last-child { border-bottom: none; }
 .list-row:active { background: #d4e5f9; }
-.list-row-btn { font-weight: 600; }
 .list-row-static { cursor: default; }
 .row-label { flex: 1; font-size: 14px; }
 .row-value { font-size: 13px; color: var(--ios-text-secondary); }
 .row-emoji { font-size: 16px; width: 22px; text-align: center; }
 .chevron { color: var(--ios-text-secondary); font-size: 18px; }
 
-.bio-row {
-  padding: 12px 14px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: #333;
-  background: rgba(255,255,255,0.92);
-}
-
-/* --- Section labels + skill chips --- */
+/* --- Section labels --- */
 .section-label {
   margin: 14px 14px 6px;
   font-size: 12px;
@@ -87,22 +48,6 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-}
-.skill-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0 14px;
-}
-.skill-chip {
-  background: var(--surface);
-  border: 1px solid var(--surface-border);
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--chip-text);
-  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
 /* --- Projects --- */

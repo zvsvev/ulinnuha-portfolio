@@ -262,8 +262,6 @@ button { font-family: inherit; cursor: pointer; }
 [data-theme='dark'] .list-group { background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
 [data-theme='dark'] .list-row { background: var(--surface); border-bottom-color: var(--surface-border); color: var(--ios-text); }
 [data-theme='dark'] .list-row:active { background: var(--surface-active); }
-[data-theme='dark'] .bio-row { background: var(--surface); color: var(--ios-text); }
-[data-theme='dark'] .skill-chip { background: var(--surface); border-color: var(--surface-border); color: var(--chip-text); }
 [data-theme='dark'] .tts-text { background: var(--surface); color: var(--ios-text); border-color: var(--surface-border); }
 [data-theme='dark'] .tts-controls { background: var(--surface); }
 [data-theme='dark'] .tts-label { color: var(--ios-text); }

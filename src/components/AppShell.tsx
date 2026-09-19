@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { AppProvider } from '../context/AppContext';
 import LockScreen from './LockScreen';
 import HomeScreen, { type AppId } from './HomeScreen';
-import AboutView from './views/AboutView';
 import ProjectsView from './views/ProjectsView';
 import NotesView from './views/NotesView';
 import ContactView from './views/ContactView';
@@ -31,7 +30,6 @@ export default function AppShell() {
 
         {view === 'home' && <HomeScreen onOpen={open} />}
 
-        {view === 'about' && <AboutView onBack={goHome} onOpen={open} />}
         {view === 'projects' && <ProjectsView onBack={goHome} onOpen={open} />}
         {view === 'notes' && <NotesView onBack={goHome} />}
         {view === 'contacts' && <ContactView onBack={goHome} />}
