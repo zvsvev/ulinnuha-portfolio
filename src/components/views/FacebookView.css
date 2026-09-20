@@ -340,81 +340,12 @@
   padding: 6px 8px;
 }
 
-/* Notifications + empty panels */
-.fb-panel {
-  min-height: 160px;
-  background: #fff;
-}
-.fb-notif {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 12px;
-  border-bottom: 1px solid #e5e5e5;
-  background: #fff;
-}
-.fb-notif-icon {
-  font-size: 18px;
-  width: 24px;
-  text-align: center;
-}
-.fb-notif-body {
-  flex: 1;
-  font-size: 12.5px;
-  color: #1c1e21;
-  line-height: 1.35;
-}
-.fb-notif-time {
-  font-size: 10px;
-  color: #90949c;
-  margin-top: 2px;
-}
 .fb-empty {
   text-align: center;
   color: #616770;
   font-size: 13px;
   padding: 48px 16px;
   background: #fff;
-}
-
-/* Bottom nav — 2015 dark blue bar */
-.fb-bottomnav {
-  position: sticky;
-  bottom: 0;
-  display: flex;
-  justify-content: space-around;
-  background: #3b5998;
-  padding: 6px 0;
-  font-size: 9px;
-  color: #dce4f0;
-  border-top: 1px solid #2e4776;
-  z-index: 5;
-}
-.fb-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  font-size: 9px;
-  border: none;
-  background: none;
-  color: #dce4f0;
-  font-family: inherit;
-  cursor: pointer;
-  padding: 2px 4px;
-}
-.fb-nav-item b {
-  font-weight: 600;
-}
-.fb-nav-item.active {
-  color: #fff;
-  font-weight: 700;
-}
-.fb-nav-item.active b {
-  font-weight: 700;
-}
-.fb-nav-item:active {
-  color: #fff;
 }
 
 /* ---------- Dark theme ---------- */
@@ -446,10 +377,4 @@
 [data-theme='dark'] .fb-compose-text { background: #2a3038; border-color: var(--surface-border); color: var(--ios-text); }
 [data-theme='dark'] .fb-compose-file { color: #9dc0ff; }
 [data-theme='dark'] .fb-compose-cancel { color: var(--ios-text-secondary); }
-[data-theme='dark'] .fb-panel,
-[data-theme='dark'] .fb-notif,
-[data-theme='dark'] .fb-empty { background: var(--surface-strong); }
-[data-theme='dark'] .fb-notif { border-bottom-color: var(--surface-border); }
-[data-theme='dark'] .fb-notif-body { color: var(--ios-text); }
-[data-theme='dark'] .fb-notif-time { color: var(--ios-text-secondary); }
-[data-theme='dark'] .fb-empty { color: var(--ios-text-secondary); }
+[data-theme='dark'] .fb-empty { background: var(--surface-strong); color: var(--ios-text-secondary); }

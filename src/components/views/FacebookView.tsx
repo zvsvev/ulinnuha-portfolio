@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import AppNav from '../AppNav';
-import { useI18n, type StringKey, type StringVars } from '../../i18n/strings';
+import { useI18n } from '../../i18n/strings';
 import { contact } from '../../data/contact';
 import { useAvatar } from '../../hooks/useAvatar';
 import type { IGPost } from './InstagramView';
@@ -19,15 +19,7 @@ type FBPost = {
   comments: FBComment[];
 };
 
-type FBTab = 'feed' | 'notifications' | 'requests' | 'messenger' | 'more';
 type ComposerKind = 'status' | 'photo' | 'checkin';
-
-const NOTIFS: { id: string; icon: string; time: string; key: StringKey; vars?: StringVars }[] = [
-  { id: 'n1', icon: '👍', time: '12m', key: 'fb_notif_liked', vars: { name: 'Ahmad' } },
-  { id: 'n2', icon: '💬', time: '1h', key: 'fb_notif_commented', vars: { name: 'Sari', text: 'Where is this?' } },
-  { id: 'n3', icon: '👥', time: '3h', key: 'fb_notif_friend', vars: { name: 'Bagas' } },
-  { id: 'n4', icon: '👍', time: '5h', key: 'fb_notif_liked_many', vars: { name: 'Dewi', count: 3 } },
-];
 
 type Props = { onBack: () => void };
 
@@ -47,7 +39,6 @@ function hueFor(seed: string) {
 export default function FacebookView({ onBack }: Props) {
   const { t } = useI18n();
   const avatar = useAvatar();
-  const [tab, setTab] = useState<FBTab>('feed');
   const [posts, setPosts] = useState<FBPost[]>([]);
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const [drafts, setDrafts] = useState<Record<string, string>>({});
@@ -131,7 +122,6 @@ export default function FacebookView({ onBack }: Props) {
 
   const openComposer = (kind: ComposerKind) => {
     setComposer(kind);
-    setTab('feed');
     setComposerText('');
     setComposerImage(null);
   };
@@ -256,8 +246,7 @@ export default function FacebookView({ onBack }: Props) {
         )}
 
         {/* Feed */}
-        {tab === 'feed' && (
-          <div className="fb-feed">
+        <div className="fb-feed">
             {posts.length === 0 && <p className="fb-empty">{t('no_posts_yet')}</p>}
             {posts.length > 0 && visiblePosts.length === 0 && <p className="fb-empty">{t('fb_no_results')}</p>}
             {visiblePosts.map((p) => (
@@ -327,40 +316,6 @@ export default function FacebookView({ onBack }: Props) {
                 )}
               </article>
             ))}
-          </div>
-        )}
-
-        {/* Notifications */}
-        {tab === 'notifications' && (
-          <div className="fb-panel">
-            {NOTIFS.length ? (
-              NOTIFS.map((n) => (
-                <div key={n.id} className="fb-notif">
-                  <span className="fb-notif-icon" aria-hidden="true">{n.icon}</span>
-                  <div className="fb-notif-body">
-                    <span>{t(n.key, n.vars)}</span>
-                    <div className="fb-notif-time">{n.time}</div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="fb-empty">{t('fb_no_notifications')}</p>
-            )}
-          </div>
-        )}
-
-        {/* Placeholder tabs */}
-        {tab === 'requests' && <p className="fb-empty fb-panel">{t('fb_no_requests')}</p>}
-        {tab === 'messenger' && <p className="fb-empty fb-panel">{t('fb_messenger_empty')}</p>}
-        {tab === 'more' && <p className="fb-empty fb-panel">{t('fb_more_placeholder')}</p>}
-
-        {/* Bottom nav — 2015 dark blue bar */}
-        <div className="fb-bottomnav">
-          <button className={`fb-nav-item${tab === 'feed' ? ' active' : ''}`} onClick={() => setTab('feed')}><span aria-hidden="true">📰</span> <b>{t('fb_news_feed')}</b></button>
-          <button className={`fb-nav-item${tab === 'requests' ? ' active' : ''}`} onClick={() => setTab('requests')}><span aria-hidden="true">👥</span> <b>{t('fb_requests')}</b></button>
-          <button className={`fb-nav-item${tab === 'messenger' ? ' active' : ''}`} onClick={() => setTab('messenger')}><span aria-hidden="true">💬</span> <b>{t('fb_messenger')}</b></button>
-          <button className={`fb-nav-item${tab === 'notifications' ? ' active' : ''}`} onClick={() => setTab('notifications')}><span aria-hidden="true">🌐</span> <b>{t('fb_notifications')}</b></button>
-          <button className={`fb-nav-item${tab === 'more' ? ' active' : ''}`} onClick={() => setTab('more')}><span aria-hidden="true">☰</span> <b>{t('fb_more')}</b></button>
         </div>
       </div>
     </div>
