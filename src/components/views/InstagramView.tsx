@@ -106,7 +106,6 @@ export default function InstagramView({ onBack }: Props) {
 
         <div className="ig-bio">
           <b>Muhammad Ulinnuha</b>
-          <span>vibecoder 🌱</span>
         </div>
 
         <button

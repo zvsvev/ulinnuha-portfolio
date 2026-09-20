@@ -92,14 +92,9 @@
 }
 
 .ig-bio {
-  display: flex;
-  flex-direction: column;
   padding: 2px 12px;
   font-size: 11.5px;
   color: var(--ios-text);
-}
-.ig-bio span {
-  color: var(--ios-text-secondary);
 }
 
 /* Blue Follow button (2015 thin-outline style) */
