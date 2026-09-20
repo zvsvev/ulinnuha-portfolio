@@ -21,6 +21,8 @@ const TABS = [...POST_APPS, ...TOOLS];
 const isPostApp = (id: string) => POST_APPS.some((a) => a.id === id);
 
 const AVATAR_MAX_DIM = 512;
+/** Small rendition for grid/feed tiles — covers them at 2× DPR. */
+const THUMB_MAX_DIM = 640;
 
 export default function AdminApp() {
   const [authed, setAuthed] = useState<boolean | null>(null);
@@ -37,6 +39,7 @@ export default function AdminApp() {
   const [caption, setCaption] = useState('');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [file, setFile] = useState<File | null>(null);
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [posts, setPosts] = useState<Record<string, Post[]>>({});
   const [preparing, setPreparing] = useState(false);
@@ -114,15 +117,21 @@ export default function AdminApp() {
   const pickFile = async (raw: File | null) => {
     if (!raw) {
       setFile(null);
+      setThumbFile(null);
       setPreparing(false);
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
       return;
     }
     setPreparing(true);
-    const processed = await downscaleImage(raw);
+    // A full-size copy for the lightbox, plus a small one for grid/feed tiles.
+    const [processed, thumb] = await Promise.all([
+      downscaleImage(raw),
+      downscaleImage(raw, THUMB_MAX_DIM),
+    ]);
     setPreparing(false);
     setFile(processed);
+    setThumbFile(thumb);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(URL.createObjectURL(processed));
   };
@@ -137,6 +146,7 @@ export default function AdminApp() {
     fd.append('caption', caption);
     fd.append('date', date);
     fd.append('image', file);
+    if (thumbFile) fd.append('thumb', thumbFile);
     try {
       const res = await fetch('/api/posts', { method: 'POST', body: fd });
       if (!res.ok) {
@@ -341,7 +351,9 @@ export default function AdminApp() {
 
                 <div className="admin-upload-fields">
                   {file && !preparing && (
-                    <p className="admin-muted">Ready: {formatBytes(file.size)}</p>
+                    <p className="admin-muted">
+                      Ready: {formatBytes(file.size + (thumbFile?.size ?? 0))}
+                    </p>
                   )}
                   <label>
                     Caption

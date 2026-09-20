@@ -23,6 +23,7 @@ export const onRequestDelete: PagesFunction<Env> = async ({ request, env, params
   if (!target) return new Response(JSON.stringify({ error: 'not found' }), { status: 404, headers });
 
   await env.MEDIA_BUCKET.delete(target.imageKey);
+  if (target.thumbKey) await env.MEDIA_BUCKET.delete(target.thumbKey);
   await env.MEDIA_KV.put(`posts:${app}`, JSON.stringify(posts.filter((p) => p.id !== id)));
 
   return new Response(JSON.stringify({ ok: true }), { headers });

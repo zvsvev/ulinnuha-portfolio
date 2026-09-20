@@ -63,7 +63,8 @@ export default function FacebookView({ onBack }: Props) {
           id: p.id,
           author: 'ulinnuha.eth',
           caption: p.caption || undefined,
-          imageUrl: p.imageUrl,
+          // The feed never shows a full-size image, so the small rendition is always right.
+          imageUrl: p.thumbUrl ?? p.imageUrl,
           time: p.date,
           likes: seedId(p.id),
           liked: false,
@@ -259,7 +260,7 @@ export default function FacebookView({ onBack }: Props) {
                   </div>
                 </div>
                 {p.caption && <p className="fb-post-caption">{p.caption}</p>}
-                {p.imageUrl && <img className="fb-post-img" src={p.imageUrl} alt={p.caption ?? ''} loading="lazy" />}
+                {p.imageUrl && <img className="fb-post-img" src={p.imageUrl} alt={p.caption ?? ''} loading="lazy" decoding="async" />}
 
                 <div className="fb-post-engagement">
                   <span className="fb-eng-likes">👍 {p.likes}</span>

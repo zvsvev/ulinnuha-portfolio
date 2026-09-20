@@ -117,6 +117,8 @@
 }
 .fb-post-img {
   width: 100%;
+  /* Reserve the box up front so the feed doesn't jump as images load. */
+  aspect-ratio: 4 / 3;
   max-height: 220px;
   object-fit: cover;
   display: block;

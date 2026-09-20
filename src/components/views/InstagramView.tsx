@@ -7,6 +7,8 @@ import './InstagramView.css';
 export type IGPost = {
   id: string;
   imageUrl: string;
+  /** Small rendition for grid tiles; falls back to imageUrl on older posts. */
+  thumbUrl?: string;
   caption: string;
   date: string;
 };
@@ -129,7 +131,7 @@ export default function InstagramView({ onBack }: Props) {
                 onClick={() => setSelected(p)}
                 aria-label={p.caption || p.date}
               >
-                <img src={p.imageUrl} alt="" loading="lazy" />
+                <img src={p.thumbUrl ?? p.imageUrl} alt="" loading="lazy" decoding="async" />
               </button>
             ))}
           </div>
@@ -143,7 +145,7 @@ export default function InstagramView({ onBack }: Props) {
             <button ref={closeButtonRef} className="ig-lightbox-close" onClick={() => setSelected(null)} aria-label={t('close')}>
               ✕
             </button>
-            <img src={selected.imageUrl} alt={selected.caption} />
+            <img src={selected.imageUrl} alt={selected.caption} decoding="async" />
             <div className="ig-lightbox-caption">
               <b>ulinnuha.eth</b> {selected.caption}
             </div>
