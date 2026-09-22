@@ -28,6 +28,15 @@ async function readPosts(env: Env, app: string): Promise<PostRecord[]> {
   }
 }
 
+/**
+ * Milliseconds for a post's date (set in the admin panel as YYYY-MM-DD).
+ * Anything unparseable sorts last rather than jumping to the top.
+ */
+function publishedAt(date: string): number {
+  const t = Date.parse(date);
+  return Number.isNaN(t) ? 0 : t;
+}
+
 /** Public: GET /api/posts?app=instagram|facebook */
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const url = new URL(request.url);
@@ -36,14 +45,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     return new Response(JSON.stringify({ error: 'invalid app' }), { status: 400, headers });
   }
   const posts = await readPosts(env, app);
-  const out = posts.map((p) => ({
-    id: p.id,
-    caption: p.caption,
-    date: p.date,
-    imageUrl: `/api/media/${p.imageKey}`,
-    // Older posts have no thumbnail, so tiles fall back to the full image.
-    thumbUrl: `/api/media/${p.thumbKey ?? p.imageKey}`,
-  }));
+  // Newest first by the date chosen in the admin panel — not upload order.
+  // The sort is stable, so posts sharing a date keep their stored order.
+  const out = [...posts]
+    .sort((a, b) => publishedAt(b.date) - publishedAt(a.date))
+    .map((p) => ({
+      id: p.id,
+      caption: p.caption,
+      date: p.date,
+      imageUrl: `/api/media/${p.imageKey}`,
+      // Older posts have no thumbnail, so tiles fall back to the full image.
+      thumbUrl: `/api/media/${p.thumbKey ?? p.imageKey}`,
+    }));
   return new Response(JSON.stringify(out), { headers });
 };
 
@@ -57,12 +70,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (!form) return new Response(JSON.stringify({ error: 'bad form' }), { status: 400, headers });
 
   const app = String(form.get('app') || '');
-  const caption = String(form.get('caption') || '').slice(0, 500);
+  // Caption is optional — a photo can be posted without one.
+  const caption = String(form.get('caption') ?? '').slice(0, 500);
   const date = String(form.get('date') || '').slice(0, 50);
   const file = form.get('image');
   const thumb = form.get('thumb');
 
-  if (!APPS.includes(app) || !caption || !date || !(file instanceof File)) {
+  if (!APPS.includes(app) || !date || !(file instanceof File)) {
     return new Response(JSON.stringify({ error: 'missing fields' }), { status: 400, headers });
   }
   if (file.size > 10 * 1024 * 1024) {
