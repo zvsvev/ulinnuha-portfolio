@@ -3,8 +3,8 @@ import AppNav from '../AppNav';
 import { useI18n } from '../../i18n/strings';
 import './PayView.css';
 
-/** Drop the QRIS export at public/img/qris.png to show it here. */
-const QRIS_SRC = '/img/qris.png';
+/** Asset lives at public/img/qris-ulinnuha.png. */
+const QRIS_SRC = '/img/qris-ulinnuha.png';
 
 type Props = { onBack: () => void };
 
