@@ -231,6 +231,16 @@
   color: #fff;
   text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
+.contact-role {
+  max-width: 240px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #fff;
+  /* The hero sits on the wallpaper, which is light in light mode — the shadow
+     is what keeps white text legible there. */
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
 .contact-cta {
   padding: 14px;
   text-align: center;

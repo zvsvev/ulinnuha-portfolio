@@ -16,5 +16,5 @@ export const socials: Social[] = [
 
 export const contact = {
   email: 'hi@ulinnuha.id',
-  location: 'Indonesia',
+  location: 'Yogyakarta, Indonesia',
 };

@@ -16,9 +16,11 @@ const APPS: AppDef[] = [
   { id: 'notes', emoji: '📝', labelKey: 'notes', bg: 'linear-gradient(180deg,#fffdf2,#f5e9b8)' },
   { id: 'calculator', emoji: '🧮', labelKey: 'calculator', bg: 'linear-gradient(180deg,#4a4a4a,#1a1a1a)' },
   { id: 'settings', emoji: '⚙️', labelKey: 'settings', bg: 'linear-gradient(180deg,#9e9e9e,#6e6e6e)' },
-  { id: 'facebook', emoji: '📘', icon: '/logo/facebook.svg', labelKey: 'facebook', bg: 'linear-gradient(180deg,#5b7bd6,#3b5998)' },
   { id: 'instagram', emoji: '📷', icon: '/logo/instagram.png', labelKey: 'instagram', bg: 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)' },
   { id: 'contacts', emoji: '📇', labelKey: 'contacts', bg: 'linear-gradient(180deg,#d8d8d8,#a8a8a8)' },
+  // Facebook is hidden for now. Everything else is still wired (AppId, the
+  // AppShell route, FacebookView, the admin tab) — re-add this line to restore:
+  // { id: 'facebook', emoji: '📘', icon: '/logo/facebook.svg', labelKey: 'facebook', bg: 'linear-gradient(180deg,#5b7bd6,#3b5998)' },
 ];
 
 // Footer dock. Deliberately holds no account links (those already live in the

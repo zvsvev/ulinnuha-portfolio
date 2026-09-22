@@ -15,8 +15,11 @@ export default function ContactView({ onBack }: Props) {
       <AppNav title={t('contacts')} onBack={onBack} />
 
       <div className="contact-hero">
-        <img className="contact-avatar" src={avatar} alt="Muhammad Ulinnuha" width="84" height="84" />
-        <h1>Muhammad Ulinnuha</h1>
+        <img className="contact-avatar" src={avatar} alt="Muhammad Ulin Nuha" width="84" height="84" />
+        <h1>Muhammad Ulin Nuha</h1>
+        <p className="contact-role">
+          Final-year undergraduate in Electrical and Instrumentation Engineering at Universitas Gadjah Mada.
+        </p>
       </div>
 
       <div className="list-group">
