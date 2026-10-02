@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppNav from '../AppNav';
 import { useI18n } from '../../i18n/strings';
 import { useAvatar } from '../../hooks/useAvatar';
@@ -20,7 +20,7 @@ const COPY_FEEDBACK_MS = 2000;
 
 // Last-known real values (from the live fetch when it succeeds). Shown as
 // fallback so the mock app never looks broken if the proxy is unreachable.
-const KNOWN = { followers: 305, following: 364 };
+const KNOWN = { followers: 308, following: 368 };
 
 type LiveStats = { followers: number | null; following: number | null; posts: number | null; stale?: boolean };
 
@@ -32,7 +32,6 @@ export default function InstagramView({ onBack }: Props) {
   const [live, setLive] = useState<LiveStats>({ followers: null, following: null, posts: null });
   const [isFollowing, setIsFollowing] = useState(false);
   const [copied, setCopied] = useState(false);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const copyProfileLink = async () => {
     try {
@@ -44,10 +43,9 @@ export default function InstagramView({ onBack }: Props) {
     }
   };
 
-  // Close the lightbox on Escape and move focus into the dialog.
+  // Close the lightbox on Escape.
   useEffect(() => {
     if (!selected) return;
-    closeButtonRef.current?.focus();
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSelected(null); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -142,9 +140,6 @@ export default function InstagramView({ onBack }: Props) {
       {selected && (
         <div className="ig-lightbox" role="dialog" aria-modal="true" aria-label={t('photo')} onClick={() => setSelected(null)}>
           <div className="ig-lightbox-card" onClick={(e) => e.stopPropagation()}>
-            <button ref={closeButtonRef} className="ig-lightbox-close" onClick={() => setSelected(null)} aria-label={t('close')}>
-              ✕
-            </button>
             <img src={selected.imageUrl} alt={selected.caption} decoding="async" />
             <div className="ig-lightbox-caption">
               <b>ulinnuha.eth</b> {selected.caption}

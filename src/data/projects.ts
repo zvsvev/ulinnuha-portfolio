@@ -13,13 +13,13 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: 'pastebags',
-    title: 'Pastebags',
-    short: 'Token-gated paste service',
+    slug: 'baksosapi',
+    title: 'Baksosapi.com',
+    short: 'Endless random facts',
     description:
-      'Solana-powered paste service with token-gated pastes, on-chain leaderboards, and win-together events. Built with Next.js, Supabase, and Solana.',
+      'Short random facts, endless to browse, each linked to the journal or book it came from.',
     created: '2025-03',
-    href: 'https://github.com/zvsvev/pastebags',
+    href: 'https://baksosapi.com',
   },
   {
     slug: 'padel',

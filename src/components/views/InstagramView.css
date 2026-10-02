@@ -182,23 +182,6 @@
   border-radius: 8px;
   overflow: hidden;
 }
-.ig-lightbox-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(0,0,0,0.55);
-  color: #fff;
-  font-size: 14px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-}
 .ig-lightbox-card img {
   width: 100%;
   max-height: 320px;
