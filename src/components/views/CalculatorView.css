@@ -1,33 +1,65 @@
 .calc-view { flex: 1; }
-.calc { flex: 1; display: flex; flex-direction: column; padding: 10px; }
+.calc { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 8px; }
 
 .calc-display {
   background: rgba(0,0,0,0.12);
   border-radius: 8px;
-  padding: 16px 12px;
-  font-size: 34px;
+  padding: 6px 12px;
+  margin-bottom: 8px;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1px;
+  overflow: hidden;
+}
+[data-theme='dark'] .calc-display { background: rgba(0,0,0,0.4); }
+
+.calc-expr {
+  font-size: 13px;
+  color: var(--ios-text-secondary);
+  text-align: right;
+  min-height: 17px;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-variant-numeric: tabular-nums;
+  scrollbar-width: none;
+}
+.calc-expr::-webkit-scrollbar { display: none; }
+
+.calc-result {
+  font-size: 28px;
   font-weight: 200;
+  line-height: 1.1;
   text-align: right;
   color: var(--ios-text);
-  margin-bottom: 10px;
-  min-height: 64px;
   overflow: hidden;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
-[data-theme='dark'] .calc-display { background: rgba(0,0,0,0.4); }
 
+/* Scientific rows — always visible, 5 columns */
+.calc-sci {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+/* Basic four-function pad */
 .calc-pad {
   flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 
 .calc-key {
   border: 1px solid rgba(0,0,0,0.25);
   border-radius: 8px;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 500;
   color: var(--ios-text);
   background: var(--surface-strong);
@@ -40,3 +72,17 @@
 .calc-key.fn { background: var(--ios-green-grad); color: #fff; }
 .calc-key.eq { background: var(--ios-green-grad); color: #fff; }
 .calc-key.zero { grid-column: span 2; }
+
+.calc-key.sci {
+  font-size: 12px;
+  font-weight: 600;
+  min-height: 24px;
+  padding: 0 1px;
+  background: var(--surface);
+  color: var(--ios-text);
+  overflow: hidden;
+}
+.calc-key.active {
+  background: var(--ios-blue-grad);
+  color: #fff;
+}
