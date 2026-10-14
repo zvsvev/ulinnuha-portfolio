@@ -22,6 +22,15 @@ export const projects: Project[] = [
     href: 'https://baksosapi.com',
   },
   {
+    slug: 'gojarvis',
+    title: 'GoJarvis',
+    short: 'Internal idea & reference store',
+    description:
+      'Internal tools for storing a database of ideas, designs, and reading references.',
+    created: '2026-10',
+    href: 'https://gojarvis.cloud',
+  },
+  {
     slug: 'padel',
     title: 'Mobile Padel',
     short: 'Padel pong for phones',
