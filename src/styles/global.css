@@ -25,7 +25,9 @@
   /* Wallpaper / background */
   --wallpaper: linear-gradient(180deg, #a7c8f0 0%, #d5e6f8 40%, #f2ead3 100%);
   --wallpaper-dark: linear-gradient(180deg, #0b1020 0%, #1b2a44 45%, #2a1f3d 100%);
-  --desktop-bg: radial-gradient(circle at 30% 20%, #2c3e50 0%, #0f171e 70%);
+  --desktop-bg: radial-gradient(ellipse at 50% 45%, #2c3e50 0%, #0f171e 72%);
+  /* Soft spotlight behind the centred phone on desktop */
+  --desktop-glow: radial-gradient(55% 48% at 50% 50%, rgba(110, 165, 255, 0.20) 0%, rgba(110, 165, 255, 0) 68%);
 
   /* Surfaces (light theme) */
   --surface: rgba(255, 255, 255, 0.92);
@@ -82,7 +84,7 @@ button { font-family: inherit; cursor: pointer; }
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: var(--desktop-bg);
+  background: var(--desktop-glow), var(--desktop-bg);
   overflow: hidden;
   pointer-events: none;
 }
@@ -276,5 +278,16 @@ button { font-family: inherit; cursor: pointer; }
   }
   .device {
     box-shadow: none;
+  }
+}
+
+/* ---------- Responsive: desktop centres the phone ---------- */
+@media (min-width: 601px) {
+  body.portfolio-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    overflow: hidden;
   }
 }
