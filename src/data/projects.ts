@@ -22,6 +22,15 @@ export const projects: Project[] = [
     href: 'https://gojarvis.cloud',
   },
   {
+    slug: 'musikin',
+    title: 'MusikIn',
+    short: 'Ad-free local music player',
+    description:
+      'Play songs straight from the files on your phone — no ads.',
+    created: '2026-10',
+    href: 'https://musikin.pages.dev',
+  },
+  {
     slug: 'padel',
     title: 'Mobile Padel',
     short: 'Padel pong for phones',
