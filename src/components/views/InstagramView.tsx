@@ -20,7 +20,7 @@ const COPY_FEEDBACK_MS = 2000;
 
 // Last-known real values (from the live fetch when it succeeds). Shown as
 // fallback so the mock app never looks broken if the proxy is unreachable.
-const KNOWN = { followers: 308, following: 368 };
+const KNOWN = { followers: 320, following: 379 };
 
 type LiveStats = { followers: number | null; following: number | null; posts: number | null; stale?: boolean };
 

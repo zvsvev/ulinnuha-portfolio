@@ -13,15 +13,6 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: 'baksosapi',
-    title: 'Baksosapi.com',
-    short: 'Endless random facts',
-    description:
-      'Short random facts, endless to browse, each linked to the journal or book it came from.',
-    created: '2025-03',
-    href: 'https://baksosapi.com',
-  },
-  {
     slug: 'gojarvis',
     title: 'GoJarvis',
     short: 'Internal idea & reference store',
