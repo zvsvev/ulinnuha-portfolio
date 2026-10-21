@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { downscaleImage, formatBytes } from './downscaleImage';
+import WritingEditor from './WritingEditor';
 import { DEFAULT_AVATAR } from '../../hooks/useAvatar';
 import { notes as defaultNotes } from '../../data/notes';
 import './AdminApp.css';
@@ -15,6 +16,7 @@ const POST_APPS = [
 const TOOLS = [
   { id: 'notes', label: 'Notes', color: '#f5c400' },
   { id: 'profile', label: 'Profile', color: '#6fbf3f' },
+  { id: 'writing', label: 'Writing', color: '#8b5cf6' },
 ];
 
 const TABS = [...POST_APPS, ...TOOLS];
@@ -496,6 +498,9 @@ export default function AdminApp() {
           </form>
         </div>
       )}
+
+      {/* ++++++ Writing tool ++++++ */}
+      {tab === 'writing' && <WritingEditor />}
     </div>
   );
 }

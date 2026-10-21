@@ -1,0 +1,13 @@
+# Copy to .dev.vars for `wrangler pages dev`. Never commit real tokens.
+ADMIN_USER=admin
+ADMIN_PASS=change-me
+SESSION_SECRET=change-me-too
+
+# Cloudflare Images (server-side only — never exposed to the browser).
+CLOUDFLARE_ACCOUNT_ID=
+CLOUDFLARE_IMAGES_TOKEN=
+CF_IMAGES_DELIVERY_HASH=
+
+# Hosts used by functions/_middleware.ts
+WRITE_HOST=write.ulinnuha.id
+SITE_HOST=ulinnuha.id

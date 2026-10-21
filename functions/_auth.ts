@@ -9,6 +9,12 @@ export interface Env {
   TURNSTILE_SECRET_KEY?: string;
   MEDIA_KV: KVNamespace;
   MEDIA_BUCKET: R2Bucket;
+  // Writing blog (write.ulinnuha.id) — Cloudflare Images storage + host routing.
+  CLOUDFLARE_ACCOUNT_ID?: string;
+  CLOUDFLARE_IMAGES_TOKEN?: string;
+  CF_IMAGES_DELIVERY_HASH?: string;
+  WRITE_HOST?: string;
+  SITE_HOST?: string;
 }
 
 const COOKIE = 'admin_session';
