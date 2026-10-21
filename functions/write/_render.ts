@@ -63,14 +63,14 @@ function layout(o: LayoutOptions): string {
   <body>
     <div class="progress" id="progress" aria-hidden="true"></div>
     <header class="masthead">
-      <a class="brand" href="/">ulinnuha <span>— writing</span></a>
+      <a class="brand" href="/">ulinnuha.eth <span>notes</span></a>
       <nav><a href="/">Archive</a><a href="/rss.xml">RSS</a></nav>
     </header>
     <main class="column">
 ${o.body}
     </main>
     <footer class="foot">
-      <span>© ${new Date().getUTCFullYear()} ulinnuha</span>
+      <span>© ${new Date().getUTCFullYear()} ulinnuha.eth</span>
       <a href="https://ulinnuha.id">ulinnuha.id</a>
     </footer>
     <script>
@@ -123,14 +123,14 @@ export function renderArchive(env: Env, articles: ArticleSummary[]): string {
         .join('\n')
     : '      <p class="empty">No articles yet.</p>';
 
-  const body = `    <h1 class="page-title">Writing</h1>
-    <p class="lede">Scanned pages straight from my notebook.</p>
+  const body = `    <h1 class="page-title">i can't write</h1>
+    <p class="lede">just putting my thoughts into words</p>
     <div class="feed">
 ${cards}
     </div>`;
 
   return layout({
-    title: 'Writing — ulinnuha',
+    title: "i can't write — ulinnuha.eth notes",
     description: 'Handwritten notes and essays, scanned and published.',
     canonical: `https://${env.WRITE_HOST || 'write.ulinnuha.id'}/`,
     body,
@@ -165,7 +165,7 @@ ${pageFigures(env, article)}
     <p class="back"><a href="/">← All writing</a></p>`;
 
   return layout({
-    title: `${article.title} — ulinnuha`,
+    title: `${article.title} — ulinnuha.eth notes`,
     description,
     canonical,
     ogImage: cover,
@@ -176,7 +176,7 @@ ${pageFigures(env, article)}
 
 export function notFoundHtml(): string {
   return layout({
-    title: 'Not found — ulinnuha',
+    title: 'Not found — ulinnuha.eth notes',
     body: `    <h1 class="page-title">Not found</h1>
     <p class="lede">That page does not exist. <a href="/">Back to writing</a>.</p>`,
   });
