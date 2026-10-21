@@ -1,8 +1,9 @@
 // Shared types + KV helpers for the handwriting blog (write.ulinnuha.id).
-// Data lives in the existing MEDIA_KV namespace under a `writing:` prefix.
+// Scans live in R2 (MEDIA_BUCKET) and are served/optimized through the zone's
+// free /cdn-cgi/image/ transformations. Data lives in MEDIA_KV under `writing:`.
 import type { Env } from './_auth';
 
-export type PageImage = { id: string; alt?: string };
+export type PageImage = { key: string; alt?: string }; // R2 object key
 export type ArticleStatus = 'published' | 'draft';
 
 export type Article = {
@@ -12,8 +13,8 @@ export type Article = {
   date: string; // YYYY-MM-DD
   tags: string[];
   status: ArticleStatus;
-  pages: PageImage[]; // ordered Cloudflare Images ids
-  coverId?: string;
+  pages: PageImage[]; // ordered R2 keys
+  coverKey?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -24,7 +25,7 @@ export type ArticleSummary = {
   subtitle?: string;
   date: string;
   tags: string[];
-  coverId?: string;
+  coverKey?: string;
   pageCount: number;
   status: ArticleStatus;
 };
@@ -48,9 +49,28 @@ export function slugify(input: string): string {
     .slice(0, 80);
 }
 
-export function imageUrl(env: Env, id: string, variant = 'article'): string {
-  const hash = env.CF_IMAGES_DELIVERY_HASH || '';
-  return `https://imagedelivery.net/${hash}/${id}/${variant}`;
+/**
+ * Build a delivery URL for an R2 scan through Cloudflare's free image
+ * transformations. `format` and `quality` do not count toward the monthly
+ * uniqueness budget, and `onerror=redirect` falls back to the original image
+ * if the free tier is ever exceeded.
+ */
+export function imageUrl(env: Env, key: string, variant = 'article'): string {
+  const host = env.WRITE_HOST || 'write.ulinnuha.id';
+  const opts =
+    variant === 'thumb'
+      ? 'width=640,fit=scale-down,quality=80'
+      : variant === 'og'
+        ? 'width=1200,height=630,fit=cover,quality=82'
+        : 'width=1600,fit=scale-down,quality=82';
+  const src = `https://${host}/api/media/${key}`;
+  return `https://${host}/cdn-cgi/image/${opts},format=auto,onerror=redirect/${src}`;
+}
+
+/** Direct (unoptimized) R2 delivery URL, used as a graceful fallback. */
+export function rawMediaUrl(env: Env, key: string): string {
+  const host = env.WRITE_HOST || 'write.ulinnuha.id';
+  return `https://${host}/api/media/${key}`;
 }
 
 export async function readIndex(env: Env): Promise<ArticleSummary[]> {
@@ -75,7 +95,7 @@ export function summarize(a: Article): ArticleSummary {
     subtitle: a.subtitle,
     date: a.date,
     tags: a.tags,
-    coverId: a.coverId ?? a.pages[0]?.id,
+    coverKey: a.coverKey ?? a.pages[0]?.key,
     pageCount: a.pages.length,
     status: a.status,
   };
@@ -116,20 +136,10 @@ export async function deleteArticle(env: Env, slug: string): Promise<Article | n
   return existing;
 }
 
-/** Deletes every page image for an article from Cloudflare Images. */
-export async function deleteImages(env: Env, ids: string[]): Promise<void> {
-  const acct = env.CLOUDFLARE_ACCOUNT_ID;
-  const token = env.CLOUDFLARE_IMAGES_TOKEN;
-  if (!acct || !token) return;
+/** Deletes page scans from R2 (used when a page is removed or an article goes). */
+export async function deleteObjects(env: Env, keys: string[]): Promise<void> {
   await Promise.all(
-    ids
-      .filter(Boolean)
-      .map((id) =>
-        fetch(`https://api.cloudflare.com/client/v4/accounts/${acct}/images/v1/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` },
-        }).catch(() => undefined),
-      ),
+    keys.filter(Boolean).map((key) => env.MEDIA_BUCKET.delete(key).catch(() => undefined)),
   );
 }
 
@@ -157,9 +167,9 @@ export function parseArticleInput(
   const pages: PageImage[] = [];
   for (const p of rawPages) {
     const page = p as Partial<PageImage>;
-    const id = typeof page?.id === 'string' ? page.id.trim() : '';
-    if (!id) return { ok: false, error: 'page missing image id' };
-    pages.push({ id, alt: typeof page.alt === 'string' ? page.alt.slice(0, 300) : undefined });
+    const key = typeof page?.key === 'string' ? page.key.trim() : '';
+    if (!key) return { ok: false, error: 'page missing image key' };
+    pages.push({ key, alt: typeof page.alt === 'string' ? page.alt.slice(0, 300) : undefined });
   }
   if (pages.length === 0) return { ok: false, error: 'need at least one page' };
   if (pages.length > 80) return { ok: false, error: 'too many pages' };
@@ -186,14 +196,14 @@ export function parseArticleInput(
     tags,
     status,
     pages,
-    coverId: typeof body.coverId === 'string' && body.coverId ? body.coverId : pages[0].id,
+    coverKey: typeof body.coverKey === 'string' && body.coverKey ? body.coverKey : pages[0].key,
     createdAt: opts.prev?.createdAt || now,
     updatedAt: now,
   };
   return { ok: true, article };
 }
 
-/* ---------- Client-facing shapes (add Cloudflare Images delivery URLs) ---------- */
+/* ---------- Client-facing shapes (add transform delivery URLs) ---------- */
 
 export type ClientArticle = Article & {
   cover: string | null;
@@ -203,11 +213,11 @@ export type ClientArticle = Article & {
 export function clientArticle(env: Env, a: Article): ClientArticle {
   return {
     ...a,
-    cover: a.coverId ? imageUrl(env, a.coverId, 'thumb') : a.pages[0] ? imageUrl(env, a.pages[0].id, 'thumb') : null,
+    cover: a.coverKey ? imageUrl(env, a.coverKey, 'thumb') : a.pages[0] ? imageUrl(env, a.pages[0].key, 'thumb') : null,
     pages: a.pages.map((p) => ({
       ...p,
-      thumb: imageUrl(env, p.id, 'thumb'),
-      full: imageUrl(env, p.id, 'article'),
+      thumb: imageUrl(env, p.key, 'thumb'),
+      full: imageUrl(env, p.key, 'article'),
     })),
   };
 }
@@ -216,5 +226,5 @@ export function clientSummary(
   env: Env,
   s: ArticleSummary,
 ): ArticleSummary & { coverThumb: string | null } {
-  return { ...s, coverThumb: s.coverId ? imageUrl(env, s.coverId, 'thumb') : null };
+  return { ...s, coverThumb: s.coverKey ? imageUrl(env, s.coverKey, 'thumb') : null };
 }

@@ -1,7 +1,7 @@
 // Server-rendered HTML for the handwriting blog. Kept dependency-free so it
 // works from Pages Functions on the write host.
 import type { Env } from '../_auth';
-import { imageUrl, type Article, type ArticleSummary } from '../_writing';
+import { imageUrl, rawMediaUrl, type Article, type ArticleSummary } from '../_writing';
 
 export function esc(value: string): string {
   return String(value)
@@ -94,8 +94,10 @@ function pageFigures(env: Env, article: Article): string {
   return article.pages
     .map((p, i) => {
       const alt = p.alt || `${article.title} — page ${i + 1}`;
+      const full = imageUrl(env, p.key, 'article');
+      const raw = rawMediaUrl(env, p.key);
       return `      <figure class="page">
-        <img src="${esc(imageUrl(env, p.id, 'article'))}" alt="${esc(alt)}" loading="${i === 0 ? 'eager' : 'lazy'}" width="1600" decoding="async" />
+        <img src="${esc(full)}" alt="${esc(alt)}" loading="${i === 0 ? 'eager' : 'lazy'}" width="1600" decoding="async" onerror="this.onerror=null;this.src='${esc(raw)}'" />
       </figure>`;
     })
     .join('\n');
@@ -105,10 +107,11 @@ export function renderArchive(env: Env, articles: ArticleSummary[]): string {
   const cards = articles.length
     ? articles
         .map((a) => {
-          const cover = a.coverId ? imageUrl(env, a.coverId, 'thumb') : '';
+          const cover = a.coverKey ? imageUrl(env, a.coverKey, 'thumb') : '';
+          const coverRaw = a.coverKey ? rawMediaUrl(env, a.coverKey) : '';
           const tags = a.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('');
           return `      <a class="card" href="/${esc(a.slug)}">
-        ${cover ? `<div class="card-media"><img src="${esc(cover)}" alt="" loading="lazy" width="640" /></div>` : ''}
+        ${cover ? `<div class="card-media"><img src="${esc(cover)}" alt="" loading="lazy" width="640" onerror="this.onerror=null;this.src='${esc(coverRaw)}'" /></div>` : ''}
         <div class="card-body">
           <time>${esc(formatDate(a.date))}</time>
           <h2>${esc(a.title)}</h2>
@@ -136,7 +139,7 @@ ${cards}
 
 export function renderArticle(env: Env, article: Article): string {
   const tags = article.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('');
-  const cover = article.coverId ? imageUrl(env, article.coverId, 'og') : undefined;
+  const cover = article.coverKey ? imageUrl(env, article.coverKey, 'og') : undefined;
   const canonical = `https://${env.WRITE_HOST || 'write.ulinnuha.id'}/${article.slug}`;
   const description = article.subtitle || `${article.title} — handwritten, ${article.pages.length} page${article.pages.length === 1 ? '' : 's'}.`;
 

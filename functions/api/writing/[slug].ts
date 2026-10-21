@@ -4,7 +4,7 @@ import {
   getArticle,
   putArticle,
   deleteArticle,
-  deleteImages,
+  deleteObjects,
   parseArticleInput,
   clientArticle,
 } from '../../_writing';
@@ -20,7 +20,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env, params })
   return json({ article: clientArticle(env, article) });
 };
 
-/** Admin-only: PUT /api/writing/[slug] — update; prunes images no longer used. */
+/** Admin-only: PUT /api/writing/[slug] — update; prunes scans no longer used. */
 export const onRequestPut: PagesFunction<Env> = async ({ request, env, params }) => {
   if (!(await isAuthed(request, env))) return json({ error: 'unauthorized' }, 401);
   const slug = String(params.slug || '');
@@ -31,20 +31,20 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
   const parsed = parseArticleInput(body, { forcedSlug: slug, prev });
   if (!parsed.ok) return json({ error: parsed.error }, 400);
 
-  const keep = new Set(parsed.article.pages.map((p) => p.id));
-  const removed = prev.pages.map((p) => p.id).filter((id) => !keep.has(id));
+  const keep = new Set(parsed.article.pages.map((p) => p.key));
+  const removed = prev.pages.map((p) => p.key).filter((k) => !keep.has(k));
 
   await putArticle(env, parsed.article);
-  await deleteImages(env, removed);
+  await deleteObjects(env, removed);
   return json({ ok: true, article: clientArticle(env, parsed.article) });
 };
 
-/** Admin-only: DELETE /api/writing/[slug] — removes the article and its images. */
+/** Admin-only: DELETE /api/writing/[slug] — removes the article and its scans. */
 export const onRequestDelete: PagesFunction<Env> = async ({ request, env, params }) => {
   if (!(await isAuthed(request, env))) return json({ error: 'unauthorized' }, 401);
   const slug = String(params.slug || '');
   const removed = await deleteArticle(env, slug);
   if (!removed) return json({ error: 'not found' }, 404);
-  await deleteImages(env, removed.pages.map((p) => p.id));
+  await deleteObjects(env, removed.pages.map((p) => p.key));
   return json({ ok: true });
 };

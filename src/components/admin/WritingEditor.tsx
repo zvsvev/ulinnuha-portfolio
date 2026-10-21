@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { downscaleImage, formatBytes } from './downscaleImage';
 import './WritingEditor.css';
 
-type PageDraft = { id: string | null; thumb: string | null; name: string; size: number };
+type PageDraft = { key: string | null; thumb: string | null; name: string; size: number };
 
 type Summary = {
   slug: string;
@@ -22,8 +22,8 @@ type ArticleResp = {
   date: string;
   tags: string[];
   status: 'published' | 'draft';
-  coverId?: string;
-  pages: { id: string; alt?: string; thumb: string; full: string }[];
+  coverKey?: string;
+  pages: { key: string; alt?: string; thumb: string; full: string }[];
 };
 
 const MAX_SCAN_DIM = 2400;
@@ -105,8 +105,8 @@ export default function WritingEditor() {
     setDate(article.date);
     setTags(article.tags.join(', '));
     setStatus(article.status);
-    setPages(article.pages.map((p) => ({ id: p.id, thumb: p.thumb, name: '', size: 0 })));
-    const ci = article.pages.findIndex((p) => p.id === article.coverId);
+    setPages(article.pages.map((p) => ({ key: p.key, thumb: p.thumb, name: '', size: 0 })));
+    const ci = article.pages.findIndex((p) => p.key === article.coverKey);
     setCoverIndex(ci >= 0 ? ci : 0);
   }
 
@@ -122,24 +122,18 @@ export default function WritingEditor() {
       for (const raw of Array.from(files)) {
         const file = await downscaleImage(raw, MAX_SCAN_DIM);
 
-        const ur = await fetch('/api/writing/upload-url', { method: 'POST' });
-        if (!ur.ok) {
-          const j = await ur.json().catch(() => null);
-          setMsg({ kind: 'err', text: `Upload URL failed: ${j?.error ?? ur.status}` });
-          break;
-        }
-        const { id, uploadURL } = (await ur.json()) as { id: string; uploadURL: string };
-
         const fd = new FormData();
-        fd.append('file', file, file.name || 'scan.jpg');
-        const put = await fetch(uploadURL, { method: 'POST', body: fd });
-        if (!put.ok) {
-          setMsg({ kind: 'err', text: 'Upload to Cloudflare failed' });
+        fd.append('image', file, file.name || 'scan.jpg');
+        const res = await fetch('/api/writing/upload', { method: 'POST', body: fd });
+        if (!res.ok) {
+          const j = await res.json().catch(() => null);
+          setMsg({ kind: 'err', text: `Upload failed: ${j?.error ?? res.status}` });
           break;
         }
+        const { key } = (await res.json()) as { key: string };
 
         const thumb = URL.createObjectURL(file);
-        setPages((prev) => [...prev, { id, thumb, name: file.name, size: file.size }]);
+        setPages((prev) => [...prev, { key, thumb, name: file.name, size: file.size }]);
       }
     } catch {
       setMsg({ kind: 'err', text: 'Upload error — try again' });
@@ -180,7 +174,7 @@ export default function WritingEditor() {
       setMsg({ kind: 'err', text: 'Title is required' });
       return;
     }
-    if (pages.length === 0 || pages.some((p) => !p.id)) {
+    if (pages.length === 0 || pages.some((p) => !p.key)) {
       setMsg({ kind: 'err', text: 'Upload at least one finished page first' });
       return;
     }
@@ -192,8 +186,8 @@ export default function WritingEditor() {
       date,
       tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
       status,
-      coverId: pages[coverIndex]?.id,
-      pages: pages.map((p) => ({ id: p.id })),
+      coverKey: pages[coverIndex]?.key,
+      pages: pages.map((p) => ({ key: p.key })),
     };
 
     setBusy(true);
@@ -241,7 +235,7 @@ export default function WritingEditor() {
       <div className="admin-card">
         <h2>{editing ? `Edit: ${title || editing}` : 'New article'}</h2>
         <p className="admin-sub">
-          Scans go to Cloudflare Images and are served as optimized WebP.
+          Scans go to R2 and are served as optimized WebP via Cloudflare transformations.
         </p>
 
         <form onSubmit={save} className="admin-form">
@@ -301,7 +295,7 @@ export default function WritingEditor() {
           {pages.length > 0 && (
             <div className="writing-pages">
               {pages.map((p, i) => (
-                <div className={`writing-page${i === coverIndex ? ' is-cover' : ''}`} key={`${p.id}-${i}`}>
+                <div className={`writing-page${i === coverIndex ? ' is-cover' : ''}`} key={`${p.key}-${i}`}>
                   {p.thumb ? <img src={p.thumb} alt={p.name || `page ${i + 1}`} /> : <div className="writing-page-pending" />}
                   <div className="writing-page-bar">
                     <span className="writing-page-num">{i + 1}</span>

@@ -7,7 +7,7 @@ import type { Env, PagesFunction } from './_auth';
 import { archiveResponse, articleResponse, notFoundResponse } from './write/serve';
 
 // Paths that already exist as real routes/assets and must not be intercepted.
-const PASSTHROUGH_PREFIXES = ['/write', '/api', '/admin'];
+const PASSTHROUGH_PREFIXES = ['/write', '/api', '/admin', '/cdn-cgi'];
 const PASSTHROUGH_EXACT = ['/sitemap.xml', '/rss.xml', '/robots.txt'];
 
 function isPassthrough(pathname: string): boolean {
